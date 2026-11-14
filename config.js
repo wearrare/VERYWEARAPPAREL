@@ -18,7 +18,7 @@ window.WR = {
     bookingUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2RsmKbqpzy1UbAosu6HWI1T3j0ClpU-2kRZZfbTWWAeNbjuSJMGHRMOG9DVUAM7zPpKy5DvvMD",
     // Google Forms > Send > "<>" tab > copy ONLY the address inside src="..."
     forms: {
-      sipThrift: ""    // the Sip & Thrift invite request form
+      sipThrift: "https://docs.google.com/forms/d/e/1FAIpQLSdEb_EjwLRTHg3ydALOu8Zy63ywxeTXyZQisp8lLdnJtukSdg/viewform"    // the Sip & Thrift invite request form
     }
   },
 
