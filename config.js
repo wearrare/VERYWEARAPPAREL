@@ -15,7 +15,7 @@ window.WR = {
   google: {
     // Google Calendar > Create > Appointment schedule > Share > copy the link
     // (if there is an "Embed" option, paste the iframe's src="..." address instead)
-    bookingUrl: "",
+    bookingUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2RsmKbqpzy1UbAosu6HWI1T3j0ClpU-2kRZZfbTWWAeNbjuSJMGHRMOG9DVUAM7zPpKy5DvvMD",
     // Google Forms > Send > "<>" tab > copy ONLY the address inside src="..."
     forms: {
       sipThrift: ""    // the Sip & Thrift invite request form
