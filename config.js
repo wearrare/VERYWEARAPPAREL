@@ -22,6 +22,30 @@ window.WR = {
     }
   },
 
+
+  // ---- password entry --------------------------------------
+  // Turn on:  python3 tools/set_password.py "the password"   (turn off: --off)
+  // This is a front door for a static site. It keeps casual visitors out; it is not bank-grade security.
+  gate: {
+    enabled: true,
+    passwordHash: "",          // filled in by tools/set_password.py (blank = no password screen)
+    salt: "wear-rare-7f3a",
+    remember: true,            // stay unlocked on this device (false = ask every visit)
+    hint: "",                  // optional line under the box, e.g. "Check your invite."
+    exempt: ["links.html"]     // pages that stay open (the QR landing page)
+  },
+
+  // ---- music -----------------------------------------------
+  // 1) Put mp3 files in the music/ folder  2) list them here. Keep each under about 10 MB.
+  // The player starts when a visitor enters, and shows a small bar at the bottom of every page.
+  music: {
+    enabled: true,
+    volume: 0.6,
+    tracks: [
+      // { title: "Track name", src: "music/track-name.mp3" },
+    ]
+  },
+
   // ---- where requests go ----------------------------------
   // Option A (recommended): a free form service that emails you every request.
   //   Web3Forms  -> formEndpoint: "https://api.web3forms.com/submit", formAccessKey: "YOUR_KEY"

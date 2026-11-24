@@ -28,6 +28,8 @@ def page(fname, title, desc, body, wide_title=None):
 <link rel="icon" href="{FAV}">
 <link rel="stylesheet" href="styles.css">
 <link rel="preload" href="fonts/BigShoulders-Bold.ttf" as="font" type="font/ttf" crossorigin>
+<script src="config.js"></script>
+<script src="gate.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -53,9 +55,9 @@ def page(fname, title, desc, body, wide_title=None):
 <div class="fine mono mute"><span>&copy; <span data-year>2026</span> Wear / Rare</span><span>Every piece is one of one</span></div>
 </div></footer>
 <noscript><div class="notice">The shop, bag and booking need JavaScript. You can always reach him on <a href="https://instagram.com/{IG}">Instagram @{IG}</a>.</div></noscript>
-<script src="config.js"></script>
 <script src="products.js"></script>
 <script src="app.js"></script>
+<script src="music.js"></script>
 </body>
 </html>
 """
