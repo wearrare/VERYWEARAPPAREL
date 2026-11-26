@@ -69,7 +69,7 @@ window.WR = {
   email: "",
 
   // ---- showroom (appointment only) -------------------------
-  showroomNote: "The showroom address is shared with confirmed guests only.",
+  showroomNote: "South Carolina based. The showroom address is shared with confirmed guests only.",
   slotMinutes: 60,        // length of one appointment
   leadHours: 24,          // earliest bookable time from now
   daysAhead: 42,          // how far ahead people can request
@@ -91,10 +91,10 @@ window.WR = {
   // travel: true = he goes to the guest, so the booking asks for an address
   // price: leave "" to show "Inquire"
   services: [
-    { id: "showroom", name: "Showroom Visit", blurb: "Private shopping in the showroom. Browse the racks with him on hand, and buy pieces right there (Venmo works).", price: "" },
+    { id: "showroom", name: "Showroom Visit", blurb: "Private shopping in the showroom. Browse the racks with a stylist on hand, and buy pieces right there (Venmo works).", price: "" },
     { id: "styling", name: "Styling Session", blurb: "One-on-one styling for a look, a season, or a whole identity.", price: "" },
-    { id: "closet", name: "Closet Edit", blurb: "He comes to you. Go through what you own: keep, restyle, release, and find the gaps.", price: "", travel: true },
-    { id: "sourcing", name: "Sourcing Request", blurb: "Looking for a specific label, era, or grail? He hunts it.", price: "" }
+    { id: "closet", name: "Closet Edit", blurb: "We come to you. Go through what you own: keep, restyle, release, and find the gaps.", price: "", travel: true },
+    { id: "sourcing", name: "Sourcing Request", blurb: "Looking for a specific label, era, or grail? We hunt it down.", price: "" }
   ],
   // ---- Sip & Thrift ----------------------------------------
   sipThrift: {
@@ -105,5 +105,5 @@ window.WR = {
   },
 
   // ---- checkout notes --------------------------------------
-  shipping: "Pickup at the showroom by appointment, or shipping. Shipping is quoted after you pay and he confirms by message."
+  shipping: "Pickup at the showroom by appointment, or shipping. Shipping is quoted after you pay and is confirmed by message."
 };

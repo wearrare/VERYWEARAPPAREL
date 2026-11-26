@@ -40,11 +40,11 @@
   function fallbackHtml(text) {
     var mail = C.email ? '<a class="btn sm ghost" href="mailto:' + esc(C.email) + "?subject=" + encodeURIComponent(text.split("\n")[0]) + "&body=" + encodeURIComponent(text) + '">Email it</a>' : "";
     return '<div class="notice"><p class="mono" style="margin:0 0 8px">One more step</p>' +
-      "<p style=\"margin:0 0 12px\">Your request is ready. Send it to him and he'll confirm.</p>" +
+      "<p style=\"margin:0 0 12px\">Your request is ready. Send it to the shop and we'll confirm.</p>" +
       '<textarea readonly rows="7" aria-label="Your request text">' + esc(text) + "</textarea>" +
       '<div class="row" style="margin-top:12px"><button type="button" class="btn sm" data-copy>Copy request</button>' +
       '<a class="btn sm ghost" target="_blank" rel="noopener" href="' + dmLink() + '" data-dm>Open Instagram DM</a>' + mail + "</div>" +
-      '<p class="hint">Paste it into the DM so it reaches him.</p></div>';
+      '<p class="hint">Paste it into the DM so it reaches us.</p></div>';
   }
   function wireFallback(root, text) {
     $$("[data-copy]", root).forEach(function (b) { b.addEventListener("click", function () { copy(text); b.textContent = "Copied"; }); });
@@ -141,14 +141,14 @@
       '<div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:22px">@' + esc(C.venmo) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. In the note, write <strong>" + esc(note) + "</strong>.</p></div>" +
       '<div class="row"><a class="btn" data-venmo href="' + esc(IS_MOBILE ? links.app : links.web) + '"' + (IS_MOBILE ? "" : ' target="_blank" rel="noopener"') + '>Open Venmo</a><button class="btn ghost" data-cp>Copy note</button></div>' +
       (IS_MOBILE ? '<p class="hint">Venmo not opening? <a href="' + esc(links.web) + '" target="_blank" rel="noopener">Use the Venmo website</a>.</p>' : "") +
-      (res.sent ? '<p class="hint" style="margin-top:18px">Your order details were sent to him. After you pay, he confirms by message and holds your pieces.</p>' : fallbackHtml(res.text)) +
+      (res.sent ? '<p class="hint" style="margin-top:18px">Your order details were sent. After you pay, we confirm by message and hold your pieces.</p>' : fallbackHtml(res.text)) +
       '<hr class="rule" style="margin:22px 0"><button class="btn ghost" data-paid>I have paid</button>';
     $("[data-cp]", body).addEventListener("click", function (e) { copy(note); e.target.textContent = "Copied"; });
     if (!res.sent) wireFallback(body, res.text);
     if (IS_MOBILE) $("[data-venmo]", body).addEventListener("click", function () { setTimeout(function () { if (!document.hidden) window.open(links.web, "_blank"); }, 1400); });
     $("[data-paid]", body).addEventListener("click", function () {
       setBag([]);
-      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in. He will confirm your payment and message you about pickup or shipping.</p><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
+      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in. We will confirm your payment and message you about pickup or shipping.</p><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
     });
   }
 
@@ -177,7 +177,7 @@
       ["Pit to pit", p.pit && p.pit + " in"], ["Length", p.length && p.length + " in"], ["Shoulder", p.shoulder && p.shoulder + " in"], ["Sleeve", p.sleeve && p.sleeve + " in"]].filter(function (r) { return r[1]; });
     var action;
     if (isBuyable(p)) action = inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>";
-    else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message him</a>.</p>';
+    else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us</a>.</p>';
     else action = '<button class="btn" disabled>' + (p.status === "sold" ? "Sold" : "On hold") + "</button>";
     body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '">' : "") + '</div>' +
       (imgs.length > 1 ? '<div class="thumbs">' + imgs.map(function (f, i) { return '<button data-th="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + esc(imgPath(f)) + '" alt=""></button>'; }).join("") + "</div>" : "") + "</div>" +
@@ -248,7 +248,7 @@
         var btn = $("button[type=submit]", form); btn.disabled = true; btn.textContent = "Sending...";
         deliver(form.getAttribute("data-request"), fields).then(function (res) {
           var box = el('<div class="ok"><h3 class="disp h3">' + (res.sent ? "Request received." : "Almost there.") + "</h3>" +
-            "<p>" + esc(form.getAttribute("data-thanks") || "He will be in touch.") + "</p>" + (res.sent ? "" : fallbackHtml(res.text)) + "</div>");
+            "<p>" + esc(form.getAttribute("data-thanks") || "We will be in touch.") + "</p>" + (res.sent ? "" : fallbackHtml(res.text)) + "</div>");
           form.replaceWith(box); if (!res.sent) wireFallback(box, res.text);
         });
       });
@@ -260,7 +260,7 @@
     var root = $('[data-mount="booking"]'); if (!root) return;
     var gb = C.google && C.google.bookingUrl;
     if (gb) {
-      root.appendChild(el('<p class="lede" style="margin-bottom:18px">Pick a time that works. You will get a confirmation, and the showroom address is shared with confirmed guests. Booking a Closet Edit? Add the address he should travel to in the form.</p>'));
+      root.appendChild(el('<p class="lede" style="margin-bottom:18px">Pick a time that works. You will get a confirmation, and the showroom address is shared with confirmed guests. Booking a Closet Edit? Add the address we should travel to in the form.</p>'));
       root.appendChild(googleEmbed(gb, "Book an appointment", 780));
       return;
     }
@@ -293,18 +293,18 @@
     root.innerHTML =
       '<form class="steps" novalidate>' +
       '<div class="step"><span class="lab">What would you like</span><div class="chips" data-svc></div><p class="hint" data-blurb></p></div>' +
-      '<div class="step"><span class="lab">Pick a day</span>' + (days.length ? '<div class="days" data-days></div>' : '<div class="notice">Appointment days are being set. Send your preferred dates in the notes below and he will reply.</div>') + "</div>" +
+      '<div class="step"><span class="lab">Pick a day</span>' + (days.length ? '<div class="days" data-days></div>' : '<div class="notice">Appointment days are being set. Send your preferred dates in the notes below and we will reply.</div>') + "</div>" +
       '<div class="step" data-timestep hidden><span class="lab">Pick a time</span><div class="slots" data-slots></div></div>' +
       '<div class="step"><span class="lab">Your details</span>' +
       '<div class="two"><div class="f"><label for="b-name">Name</label><input id="b-name" name="Name" type="text" autocomplete="name" required data-label="name"></div>' +
       '<div class="f"><label for="b-contact">Phone, email or Instagram</label><input id="b-contact" name="Contact" type="text" required data-label="contact"></div></div>' +
       '<div class="two"><div class="f"><label for="b-guests">Guests</label><select id="b-guests" name="Guests"></select></div>' +
       '<div class="f"><label for="b-email">Email (for your calendar invite)</label><input id="b-email" name="Email" type="email" autocomplete="email"></div></div>' +
-      '<div class="f" data-travel hidden><label for="b-addr">Address he will travel to</label><textarea id="b-addr" name="Travel address" placeholder="Street, city, apartment or gate details"></textarea><p class="hint">He comes to you for this service. This goes to him only.</p></div>' +
+      '<div class="f" data-travel hidden><label for="b-addr">Address we will travel to</label><textarea id="b-addr" name="Travel address" placeholder="Street, city, apartment or gate details"></textarea><p class="hint">We come to you for this service. This stays private.</p></div>' +
       '<div class="f"><label for="b-notes">What are you looking for?</label><textarea id="b-notes" name="Notes" placeholder="Labels, eras, an occasion, sizes..."></textarea></div>' +
       '<input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<p class="err" data-err hidden></p><button class="btn" type="submit">Request this appointment</button>' +
-      '<p class="hint">' + esc(C.showroomNote || "") + " Appointments are requests until he confirms.</p></div></form>";
+      '<p class="hint">' + esc(C.showroomNote || "") + " Appointments are requests until we confirm.</p></div></form>";
 
     var form = $("form", root), svcBox = $("[data-svc]", root);
     var gs = $("#b-guests", root); for (var g = 1; g <= (C.maxGuests || 4); g++) gs.appendChild(el("<option>" + g + "</option>"));
@@ -353,7 +353,7 @@
       if (!name || !contact) { err.hidden = false; err.textContent = "Add your name and a way to reach you."; return; }
       var cur = svc.filter(function (s) { return s.id === S.service; })[0] || { name: "Appointment" };
       var addr = form.elements["Travel address"].value.trim();
-      if (cur.travel && !addr) { err.hidden = false; err.textContent = "Add the address he should travel to."; return; }
+      if (cur.travel && !addr) { err.hidden = false; err.textContent = "Add the address we should travel to."; return; }
       err.hidden = true;
       var when = S.time ? DOW[S.time.getDay()] + " " + MON[S.time.getMonth()] + " " + S.time.getDate() + ", " + fmtTime(S.time) : "";
       var fields = { Service: cur.name, When: when, Name: name, Contact: contact, Email: form.elements["Email"].value, Guests: form.elements["Guests"].value, "Travel address": cur.travel ? addr : "", Notes: form.elements["Notes"].value, Status: "REQUESTED - confirm with guest" };
@@ -365,7 +365,7 @@
           cal = '<a class="btn sm ghost" download="very-wear-apparel-appointment.ics" href="data:text/calendar;charset=utf-8,' + encodeURIComponent(data) + '">Add to my calendar</a>';
         }
         var box = el('<div class="ok"><h2 class="disp h2">' + (res.sent ? "Request sent." : "Almost there.") + "</h2><p class=\"lede\">" + esc(cur.name) + (when ? " &middot; " + esc(when) : "") + "</p>" +
-          "<p>It's a request until he confirms. Watch for his message" + (fields.Email ? " at " + esc(fields.Email) : "") + ".</p>" + (res.sent ? "" : fallbackHtml(res.text)) + '<div class="row" style="margin-top:14px">' + cal + "</div></div>");
+          "<p>It's a request until we confirm. Watch for our message" + (fields.Email ? " at " + esc(fields.Email) : "") + ".</p>" + (res.sent ? "" : fallbackHtml(res.text)) + '<div class="row" style="margin-top:14px">' + cal + "</div></div>");
         form.replaceWith(box); if (!res.sent) wireFallback(box, res.text);
         box.scrollIntoView({ behavior: "smooth", block: "center" });
       });

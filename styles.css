@@ -227,3 +227,20 @@ noscript .notice { margin: 20px var(--gutter); }
 .su-msg { min-height: 1.4em; margin: 12px 0 0; }
 @media (max-width: 600px) { .su-form { grid-template-columns: 1fr; } .su-form button { padding: 12px; } }
 .logo { text-wrap: balance; }
+
+/* headings: every word starts with a capital */
+h1, h2, h3, .disp, .h1, .h2, .h3 { text-transform: capitalize; }
+.logo, .wr-box .logo { text-transform: uppercase; }
+
+/* email sign-up prompt that slides in after a little scrolling */
+.su-pop { position: fixed; right: 16px; bottom: 16px; z-index: 95; width: min(380px, calc(100vw - 24px)); background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); padding: 26px 20px 18px; transform: translateY(24px); opacity: 0; transition: transform .35s ease, opacity .35s ease; }
+.su-pop.in { transform: none; opacity: 1; }
+.su-pop .su-box { border: 0; padding: 0; text-align: left; max-width: none; }
+.su-pop .su-box::after { display: none; }
+.su-pop .su-box h2 { font-size: 30px !important; margin: 6px 0 6px !important; }
+.su-pop .su-box p.mute { margin: 0 0 12px; font-size: 14px; }
+.su-pop .su-form { grid-template-columns: 1fr; gap: 8px; }
+.su-pop .su-form button { padding: 11px; }
+.su-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; font-size: 26px; line-height: 1; cursor: pointer; color: var(--ink); padding: 4px 8px; }
+@media (max-width: 600px) { .su-pop { right: 12px; left: 12px; width: auto; bottom: 12px; } body:has(.wr-music) .su-pop { bottom: 70px; } }
+@media (prefers-reduced-motion: reduce) { .su-pop { transition: none; } }

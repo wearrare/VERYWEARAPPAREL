@@ -33,17 +33,17 @@ def page(fname, title, desc, body, wide_title=None):
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<div class="strip"><div class="wrap mono"><span>Vintage curation</span><span>Appointment-only showroom</span><span>@{IG}</span></div></div>
+<div class="strip"><div class="wrap mono"><span>Vintage curation</span><span>South Carolina &middot; Appointment-only showroom</span><span>@{IG}</span></div></div>
 <header class="mast"><a href="index.html" aria-label="Very Wear Apparel home"><h1 class="logo shoulders">Very Wear Apparel</h1></a>
 <div class="sub mono mute">The Holy Haberdashery &middot; Excellently curated gems</div></header>
 <nav class="nav" aria-label="Main"><div class="wrap"><ul>{nav}</ul>
 <button class="bagbtn" data-open-bag>Bag (<span data-bag-count>0</span>)</button></div></nav>
 <main id="main">
 {body}
-<section class="su" data-signup hidden><div class="wrap"><div class="su-box">
-<span class="mono mute">The list</span>
-<h2 class="disp" style="font-size:clamp(34px,6vw,52px);margin:8px 0 8px">First look at new pieces</h2>
-<p class="mute" style="margin:0 0 16px;max-width:46ch">New drops, appointment openings and events, sent straight to you. Unsubscribe any time.</p>
+<section class="su" data-signup><div class="wrap"><div class="su-box">
+<span class="mono mute">The Drop List</span>
+<h2 class="disp" style="font-size:clamp(34px,6vw,52px);margin:8px 0 8px">First Look At New Drops</h2>
+<p class="mute" style="margin:0 0 16px;max-width:46ch">New pieces, appointment openings and events, sent to your inbox before they post anywhere else.</p>
 <form class="su-form" novalidate>
 <input type="text" name="name" placeholder="First name" autocomplete="given-name" aria-label="First name">
 <input type="email" name="email" placeholder="Email" autocomplete="email" required aria-label="Email">
@@ -65,7 +65,7 @@ def page(fname, title, desc, body, wide_title=None):
 </div>
 <div class="fine mono mute"><span>&copy; <span data-year>2026</span> Very Wear Apparel</span><span>Every piece is one of one</span></div>
 </div></footer>
-<noscript><div class="notice">The shop, bag and booking need JavaScript. You can always reach him on <a href="https://instagram.com/{IG}">Instagram @{IG}</a>.</div></noscript>
+<noscript><div class="notice">The shop, bag and booking need JavaScript. You can always reach Very Wear Apparel on <a href="https://instagram.com/{IG}">Instagram @{IG}</a>.</div></noscript>
 <script src="products.js"></script>
 <script src="app.js"></script>
 <script src="signup.js"></script>
@@ -89,7 +89,7 @@ TICK = "".join(f"{w} &nbsp;&middot;&nbsp; " for w in ["Chanel","Gucci","Christia
 # ---------------------------------------------------------------- HOME
 home = f"""
 <section class="hero"><div class="wrap">
-<span class="mono mute">Vintage curation &middot; Appointment-only showroom</span>
+<span class="mono mute">Vintage curation &middot; South Carolina &middot; Appointment-only showroom</span>
 <h2 class="disp h1">Not just clothes.<br>A collection.</h2>
 <p class="lede">Vintage garments and accessories are art, and their value runs far past money. Very Wear Apparel is a curated archive of rare pieces you can own, wear, and keep.</p>
 <div class="row" style="justify-content:center"><a class="btn" href="shop.html">Shop the collection</a><a class="btn ghost" href="book.html">Book a showroom visit</a></div>
@@ -106,7 +106,7 @@ home = f"""
 <div class="grid g3">
 <div class="panel"><span class="mono mute">01 / Shop</span><h3 class="disp h3">The collection</h3><p>One of one pieces, priced and ready. Add to your bag, pay with Venmo, done.</p><a class="btn sm" href="shop.html">Shop now</a></div>
 <div class="panel"><span class="mono mute">02 / Showroom</span><h3 class="disp h3">By appointment</h3><p>Private visits only, open seven days. Pick a time, browse the racks, and buy on the spot.</p><a class="btn sm" href="book.html">Book a visit</a></div>
-<div class="panel"><span class="mono mute">03 / Stylist</span><h3 class="disp h3">Style with him</h3><p>Personal styling, closet edits, and sourcing from someone fluent in the houses.</p><a class="btn sm" href="stylist.html">See services</a></div>
+<div class="panel"><span class="mono mute">03 / Stylist</span><h3 class="disp h3">Get Styled</h3><p>Personal styling, closet edits, and sourcing from someone fluent in the houses.</p><a class="btn sm" href="stylist.html">See services</a></div>
 </div></div></section>
 
 <section style="padding-top:0"><div class="wrap">
@@ -120,7 +120,7 @@ home = f"""
 </div></div></section>
 
 <section style="padding-top:0"><div class="wrap">
-<hr class="rule2"><p class="mono mute" style="text-align:center;margin:16px 0">Find him at pop-ups &amp; markets &middot; T-Street &middot; ThriftCon ATL &middot; NC Bazaar &middot; PunkFlea &middot; The Senate &middot; USC</p><hr class="rule2">
+<hr class="rule2"><p class="mono mute" style="text-align:center;margin:16px 0">Find us at pop-ups &amp; markets &middot; T-Street &middot; ThriftCon ATL &middot; NC Bazaar &middot; PunkFlea &middot; The Senate &middot; USC</p><hr class="rule2">
 </div></section>
 """
 page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
@@ -130,7 +130,7 @@ page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <div class="notice" style="margin-top:34px"><span class="mono">How it works</span>
-<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. He confirms your payment and arranges pickup at the showroom or shipping. Looking for something specific? <a href="stylist.html">Ask him to source it</a>.</p></div>
+<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed by message, and pickup at the showroom or shipping is arranged. Looking for something specific? <a href="stylist.html">Ask us to source it</a>.</p></div>
 </div></section>"""
 page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
 
@@ -141,25 +141,25 @@ archive = head("Value beyond money", "The Archive",
 <div class="grid g2" style="margin-bottom:40px">
 <div><h2 class="disp h2" style="margin-bottom:14px">Clothing as collection</h2>
 <p>Price tells you what something costs. It doesn't tell you what it is. In the Archive, pieces are kept for their craft, their era, their cut, and the culture they carry, and shown the way a gallery shows a work.</p>
-<p>Some archive pieces eventually find a new keeper. Most stay. Ask him about any plate.</p></div>
-<div><span class="mono mute">What he looks at</span>
+<p>Some archive pieces eventually find a new keeper. Most stay. Ask about any piece.</p></div>
+<div><span class="mono mute">What We Look At</span>
 <ul class="list" style="margin-top:12px">
 <li><span>Label &amp; construction</span><span class="mono mute">01</span></li>
 <li><span>Era &amp; provenance</span><span class="mono mute">02</span></li>
 <li><span>Condition &amp; wear</span><span class="mono mute">03</span></li>
 <li><span>Cultural weight</span><span class="mono mute">04</span></li></ul></div></div>
-<div class="sec-head"><h2 class="disp h3">The plates</h2><span class="mono mute">Not for sale unless noted</span></div>
+<div class="sec-head"><h2 class="disp h3">The Archive Pieces</h2><span class="mono mute">Not for sale unless noted</span></div>
 <div data-mount="archive"></div>
 </div></section>"""
 page("archive.html", "The Archive | Very Wear Apparel", "Vintage clothing and accessories as an art collection with value far beyond money.", archive)
 
 # ---------------------------------------------------------------- STYLIST
-stylist = head("Services", "Stylist", "He knows the houses, the seasons, and the stitching. Bring a closet, an occasion, or a grail you can't find, and he'll build from there.") + """
+stylist = head("Services", "Stylist", "Deep knowledge of the houses, the seasons, and the stitching. Bring a closet, an occasion, or a grail you can't find, and we'll build from there.") + """
 <section><div class="wrap">
 <div data-mount="services"></div>
 <div class="grid g2" style="margin-top:44px">
 <div class="panel"><span class="mono mute">Fluent in</span><h3 class="disp h3">The houses</h3><p>Chanel, Gucci, Christian Dior, Rick Owens, and the wider world of designer and archive fashion. Ask about a label, a season, a stitch.</p></div>
-<div class="panel"><span class="mono mute">How it works</span><h3 class="disp h3">Request, confirm, meet</h3><p>Choose a service and a time on the booking page. He confirms by message, then you meet at the showroom or online.</p><a class="btn sm" href="book.html">Book now</a></div>
+<div class="panel"><span class="mono mute">How it works</span><h3 class="disp h3">Request, confirm, meet</h3><p>Choose a service and a time on the booking page. You'll get a confirmation by message, then you meet at the showroom or online.</p><a class="btn sm" href="book.html">Book now</a></div>
 </div></div></section>"""
 page("stylist.html", "Stylist | Very Wear Apparel", "Personal styling, closet edits and sourcing from a stylist fluent in Chanel, Gucci, Dior and Rick Owens.", stylist)
 
@@ -177,31 +177,31 @@ sip = head("By invitation", "Sip &amp; Thrift", "An evening in the showroom. Tea
 <li><span>Racks by era and mood</span><span class="mono mute">Not by size</span></li>
 <li><span>Find of the night</span><span class="mono mute">One piece, revealed</span></li>
 <li><span>Guests-only pricing</span><span class="mono mute">That night</span></li></ul>
-<form class="panel" data-gform="sipThrift" data-request="Sip & Thrift invite request" data-thanks="Thank you. Guests are selected and invited. If you're chosen, he'll reach out with the date, time and address." novalidate>
+<form class="panel" data-gform="sipThrift" data-request="Sip & Thrift invite request" data-thanks="Thank you. Guests are selected and invited. If you're chosen, you'll hear from us with the date, time and address." novalidate>
 <h3 class="disp h3" style="margin-bottom:14px">Request an invite</h3>
 <div class="f"><label for="s-name">Name</label><input id="s-name" name="Name" type="text" required data-label="name"></div>
 <div class="two"><div class="f"><label for="s-ig">Instagram</label><input id="s-ig" name="Instagram" type="text" placeholder="@" required data-label="Instagram"></div>
 <div class="f"><label for="s-email">Email</label><input id="s-email" name="Email" type="email"></div></div>
 <div class="two"><div class="f"><label for="s-plus">Plus one?</label><select id="s-plus" name="Plus one"><option>No</option><option>Yes</option></select></div>
 <div class="f"><label for="s-drink">Drink</label><select id="s-drink" name="Drink"><option>Cocktail</option><option>Mocktail</option><option>Tea</option><option>Surprise me</option></select></div></div>
-<div class="f"><label for="s-note">Anything he should know?</label><textarea id="s-note" name="Notes" placeholder="Labels you love, sizes, dietary notes..."></textarea></div>
+<div class="f"><label for="s-note">Anything we should know?</label><textarea id="s-note" name="Notes" placeholder="Labels you love, sizes, dietary notes..."></textarea></div>
 <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
 <p class="err" hidden></p><button class="btn" type="submit">Request invite</button></form>
 </div></div></div></section>"""
 page("sip-thrift.html", "Sip & Thrift | Very Wear Apparel", "An invitation-only evening of tea, drinks and rare vintage in the Very Wear Apparel showroom.", sip)
 
 # ---------------------------------------------------------------- BOOK
-book = head("Appointment only", "Book the showroom", "The showroom opens by appointment. Choose what you'd like, pick a day and time, and he'll confirm.") + """
+book = head("Appointment only", "Book the showroom", "The showroom opens by appointment. Choose what you'd like, pick a day and time, and you'll get a confirmation by message. South Carolina based.") + """
 <section><div class="wrap" style="max-width:820px"><div data-mount="booking"></div></div></section>"""
 page("book.html", "Book an appointment | Very Wear Apparel", "Request a private showroom visit, styling session, closet edit or sourcing consult with Very Wear Apparel.", book)
 
 # ---------------------------------------------------------------- ABOUT
-about = head("About", "The Holy Haberdashery", "Very Wear Apparel is a vintage curation practice built on one belief: what we wear is art, and the best of it is worth far more than its price tag.") + f"""
+about = head("About", "The Holy Haberdashery", "Very Wear Apparel is a South Carolina based vintage curation practice built on one belief: what we wear is art, and the best of it is worth far more than its price tag.") + f"""
 <section><div class="wrap"><div class="grid g2" style="align-items:start">
 <div><p>Vintage is not a trend here. It is an archive. Every piece is sourced, studied, and chosen for what it is: the hand that made it, the decade it's from, and the way it carries itself.</p>
-<p>He knows the industry deeply, especially high fashion and designer garments from houses like Chanel, Gucci, Christian Dior and Rick Owens. That knowledge shapes what comes into the collection, how it's presented, and how he styles the people who wear it.</p>
+<p>The knowledge here runs deep, especially in high fashion and designer garments from houses like Chanel, Gucci, Christian Dior and Rick Owens. That knowledge shapes what comes into the collection, how it's presented, and how the people who wear it are styled.</p>
 <p>Beyond selling, there's styling, closet edits, and Sip &amp; Thrift evenings in the showroom, because clothes are better when people get to love them in the same room.</p></div>
-<div class="panel"><span class="mono mute">Find him</span>
+<div class="panel"><span class="mono mute">Find Us</span>
 <ul class="list" style="margin-top:12px">
 <li><span>Instagram</span><a href="https://instagram.com/{IG}" target="_blank" rel="noopener">@{IG}</a></li>
 <li><span>Personal</span><a href="https://instagram.com/{SAGE}" target="_blank" rel="noopener">@{SAGE}</a></li>
