@@ -3,6 +3,8 @@
 
   python3 tools/import_pieces.py SHEET.csv PHOTOS_FOLDER            (dry run: shows what it would do)
   python3 tools/import_pieces.py SHEET.csv PHOTOS_FOLDER --write    (copies photos + updates products.js)
+  python3 tools/import_pieces.py SHEET.csv --uploaded --write       (photos already uploaded to images/pieces/ as
+                                                                     vwa-014-1.jpg, vwa-014-2.jpg ...; uses each row's Photos count)
 
 SHEET.csv  = the Google Sheet exported as CSV (File > Download > CSV).
 PHOTOS     = a folder of photos. Two ways to name them:
@@ -106,9 +108,16 @@ def contact_sheet(items, path):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     write = "--write" in sys.argv
-    if len(args) != 2: sys.exit(__doc__)
-    rows, folder = read_rows(args[0]), args[1]
-    photos, leftover = find_photos(folder, rows)
+    uploaded = "--uploaded" in sys.argv
+    if len(args) != (1 if uploaded else 2): sys.exit(__doc__)
+    rows = read_rows(args[0]); folder = args[1] if not uploaded else None
+    if uploaded:
+        photos, leftover = {}, 0
+        for r in rows:
+            n = int(num(r.get("photos")) or 0)
+            if r.get("id") and n: photos[r["id"].upper()] = [f"{r['id'].lower()}-{i + 1}.jpg" for i in range(n)]
+    else:
+        photos, leftover = find_photos(folder, rows)
     ready, skipped, entries, report, cover_items = [], [], [], [], []
     for r in sorted(rows, key=lambda r: natural(r.get("id", ""))):
         sid = (r.get("id") or "").upper()
@@ -120,25 +129,29 @@ def main():
         if not ph: skipped.append(f"{sid}: no photos found"); continue
         low = sid.lower()
         names = [f"{low}-{i + 1}.jpg" for i in range(len(ph))]
+        if uploaded:
+            missing = [n for n in names if not os.path.exists(os.path.join(OUT_IMG, n))]
+            if missing: skipped.append(f"{sid}: not in images/pieces/ yet: {', '.join(missing[:3])}"); continue
         ready.append((sid, ph, names))
         entries.append((r, names))
         pr = num(r.get("price"))
         report.append(f"{sid}: {len(ph)} photos, {('$' + format(pr, 'g')) if pr is not None else 'no price'}, {r['name']}")
-        cover_items.append((sid, ph[0]))
+        if not uploaded: cover_items.append((sid, ph[0]))
     print(f"Ready: {len(ready)}   Skipped: {len(skipped)}   Unused loose photos: {leftover}")
     for s in report: print("  ok  ", s)
     for s in skipped: print("  skip", s)
     if leftover > 0: print(f"  note {leftover} loose photos were not matched to any piece (check the Photos counts)")
     if not write:
-        if cover_items:
+        if cover_items and not uploaded:
             cs = os.path.join(folder, "_check-contact-sheet.jpg"); contact_sheet(cover_items, cs); print("Contact sheet:", cs)
         print("Dry run only. Add --write to publish these."); return
     os.makedirs(OUT_IMG, exist_ok=True)
-    for sid, ph, names in ready:
-        for i, (p, n) in enumerate(zip(ph, names)):
-            save(p, os.path.join(OUT_IMG, n), MAXSIDE)
-            if i < 2: save(p, os.path.join(OUT_IMG, n.replace(".jpg", "-t.jpg")), THUMBSIDE)
-    body = ",\n".join(build_entry(r, names, True) for r, names in entries)
+    if not uploaded:
+        for sid, ph, names in ready:
+            for i, (p, n) in enumerate(zip(ph, names)):
+                save(p, os.path.join(OUT_IMG, n), MAXSIDE)
+                if i < 2: save(p, os.path.join(OUT_IMG, n.replace(".jpg", "-t.jpg")), THUMBSIDE)
+    body = ",\n".join(build_entry(r, names, not uploaded) for r, names in entries)
     src = open(PJS, encoding="utf-8").read()
     if START not in src: sys.exit("products.js is missing the IMPORTED markers")
     a, b = src.index(START), src.index(END)
