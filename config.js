@@ -1,5 +1,5 @@
 /* ============================================================
-   WEAR / RARE  -  site settings
+   VERY WEAR APPAREL  -  site settings
    Everything you are likely to change lives in this one file.
    Edit it right on GitHub (pencil icon), then "Commit changes".
    ============================================================ */

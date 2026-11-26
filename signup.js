@@ -1,4 +1,4 @@
-/* Wear / Rare - email sign-up box. Shows only when config.js has signup.action set.
+/* Very Wear Apparel - email sign-up box. Shows only when config.js has signup.action set.
    Works with Google Forms, MailerLite, Mailchimp, Brevo, Formspree and similar: the box posts to the address you paste. */
 (function () {
   var S = window.WR && WR.signup;

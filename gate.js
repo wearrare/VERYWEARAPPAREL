@@ -1,4 +1,4 @@
-/* Wear / Rare - password entry.
+/* Very Wear Apparel - password entry.
    Turned on when config.js has gate.passwordHash set. Set it with:  python3 tools/set_password.py "the password"
    Note: this is a front door for a static site. It keeps casual visitors out; it is not bank-grade security. */
 (function () {
@@ -30,7 +30,7 @@
     g.innerHTML =
       '<form class="wr-box" autocomplete="off">' +
       '<span class="mono mute">Private showroom</span>' +
-      '<h1 class="logo shoulders">Wear / Rare</h1>' +
+      '<h1 class="logo shoulders">Very Wear Apparel</h1>' +
       '<div class="mono mute wr-tag">The Holy Haberdashery</div>' +
       '<hr class="rule2">' +
       '<label class="mono" for="wr-pw">Enter password</label>' +

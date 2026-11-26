@@ -1,4 +1,4 @@
-/* Wear / Rare - music player. Plays the tracks in config.js (music.tracks). Add mp3 files to the music/ folder.
+/* Very Wear Apparel - music player. Plays the tracks in config.js (music.tracks). Add mp3 files to the music/ folder.
    Starts when a visitor enters (password button or the play button). Remembers its place from page to page. */
 (function () {
   var M = window.WR && WR.music;

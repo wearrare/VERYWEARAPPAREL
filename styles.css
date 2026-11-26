@@ -194,7 +194,7 @@ noscript .notice { margin: 20px var(--gutter); }
 #wr-gate { position: fixed; inset: 0; z-index: 200; background: var(--paper); display: grid; place-items: center; padding: 20px; overflow: auto; }
 .wr-box { width: min(440px, 100%); text-align: center; border: 1px solid var(--ink); padding: 34px 26px 28px; position: relative; background: var(--paper); }
 .wr-box::after { content: ""; position: absolute; inset: 5px; border: 1px solid var(--ink); opacity: .35; pointer-events: none; }
-.wr-box .logo { white-space: nowrap; font-size: clamp(44px, 14vw, 78px); line-height: .9; margin: 8px 0 6px; }
+.wr-box .logo { font-size: clamp(44px, 13vw, 72px); line-height: .9; margin: 8px 0 6px; }
 .wr-box .wr-tag { margin-bottom: 18px; }
 .wr-box label { display: block; margin: 20px 0 8px; }
 .wr-box input { width: 100%; font: 18px "Mono", monospace; letter-spacing: .12em; text-align: center; padding: 12px; border: 1px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; }
@@ -226,3 +226,4 @@ noscript .notice { margin: 20px var(--gutter); }
 .su-form button:hover, .su-form button:focus-visible { background: var(--paper); color: var(--ink); }
 .su-msg { min-height: 1.4em; margin: 12px 0 0; }
 @media (max-width: 600px) { .su-form { grid-template-columns: 1fr; } .su-form button { padding: 12px; } }
+.logo { text-wrap: balance; }

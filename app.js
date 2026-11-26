@@ -1,4 +1,4 @@
-/* WEAR / RARE - site behaviour. No build step, no dependencies. */
+/* VERY WEAR APPAREL - site behaviour. No build step, no dependencies. */
 (function () {
   "use strict";
   var C = window.WR || {};
@@ -31,7 +31,7 @@
       .map(function (k) { return k + ": " + fields[k]; });
     var text = subject + "\n\n" + lines.join("\n");
     if (!C.formEndpoint) return Promise.resolve({ sent: false, text: text });
-    var body = Object.assign({ subject: subject, from_name: "Wear/Rare website" }, fields);
+    var body = Object.assign({ subject: subject, from_name: "Very Wear Apparel website" }, fields);
     if (C.formAccessKey) body.access_key = C.formAccessKey;
     return fetch(C.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) })
       .then(function (r) { return { sent: r.ok, text: text }; })
@@ -97,7 +97,7 @@
   }
 
   /* ---------- checkout / Venmo ---------- */
-  function newOrderId() { return "WR-" + Date.now().toString(36).slice(-5).toUpperCase(); }
+  function newOrderId() { return "VWA-" + Date.now().toString(36).slice(-5).toUpperCase(); }
   function venmoLinks(amount, note) {
     var q = "txn=pay&recipients=" + encodeURIComponent(C.venmo) + "&amount=" + amount + "&note=" + encodeURIComponent(note);
     return { app: "venmo://paycharge?" + q, web: "https://venmo.com/u/" + encodeURIComponent(C.venmo) };
@@ -134,7 +134,7 @@
   }
   function showPay(orderId, total, fields, res, ids) {
     var body = $("[data-body]", checkDlg);
-    var note = "Wear/Rare " + orderId + ": " + ids.join(", ");
+    var note = "VWA " + orderId + ": " + ids.join(", ");
     var links = venmoLinks(total, note);
     body.innerHTML =
       '<h2 class="disp h2">Pay with Venmo</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong>.</p>" +
@@ -338,7 +338,7 @@
       var end = new Date(start.getTime() + C.slotMinutes * 60000);
       function f(d) { return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00"; }
       var stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
-      return "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Wear Rare//EN\r\nBEGIN:VEVENT\r\nUID:" + Date.now() + "@wearrare\r\nDTSTAMP:" + stamp + "\r\nDTSTART:" + f(start) + "\r\nDTEND:" + f(end) +
+      return "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Very Wear Apparel//EN\r\nBEGIN:VEVENT\r\nUID:" + Date.now() + "@verywearapparel\r\nDTSTAMP:" + stamp + "\r\nDTSTART:" + f(start) + "\r\nDTEND:" + f(end) +
         "\r\nSUMMARY:" + summary + "\r\nDESCRIPTION:" + desc.replace(/\n/g, "\\n") + "\r\nEND:VEVENT\r\nEND:VCALENDAR";
     }
 
@@ -358,8 +358,8 @@
       deliver("Appointment request: " + cur.name + (when ? " - " + when : ""), fields).then(function (res) {
         var cal = "";
         if (S.time) {
-          var data = ics(S.time, "Wear/Rare - " + cur.name + " (requested)", "Requested appointment. Wear/Rare will confirm. " + (C.showroomNote || ""));
-          cal = '<a class="btn sm ghost" download="wear-rare-appointment.ics" href="data:text/calendar;charset=utf-8,' + encodeURIComponent(data) + '">Add to my calendar</a>';
+          var data = ics(S.time, "Very Wear Apparel - " + cur.name + " (requested)", "Requested appointment. Very Wear Apparel will confirm. " + (C.showroomNote || ""));
+          cal = '<a class="btn sm ghost" download="very-wear-apparel-appointment.ics" href="data:text/calendar;charset=utf-8,' + encodeURIComponent(data) + '">Add to my calendar</a>';
         }
         var box = el('<div class="ok"><h2 class="disp h2">' + (res.sent ? "Request sent." : "Almost there.") + "</h2><p class=\"lede\">" + esc(cur.name) + (when ? " &middot; " + esc(when) : "") + "</p>" +
           "<p>It's a request until he confirms. Watch for his message" + (fields.Email ? " at " + esc(fields.Email) : "") + ".</p>" + (res.sent ? "" : fallbackHtml(res.text)) + '<div class="row" style="margin-top:14px">' + cal + "</div></div>");
