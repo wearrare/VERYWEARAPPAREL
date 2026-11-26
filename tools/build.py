@@ -221,6 +221,8 @@ links_html = f"""<!doctype html>
 <meta name="theme-color" content="#faf8f3">
 <link rel="icon" href="{FAV}">
 <link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
+<script src="gate.js"></script>
 <style>
 .lp {{ max-width: 520px; margin: 0 auto; padding: 28px 18px 44px; text-align: center; }}
 .lp .logo {{ font-size: clamp(60px, 18vw, 96px); line-height: .9; margin: 6px 0 6px; }}

@@ -65,7 +65,7 @@ Fill in `sipThrift` in `config.js` once the date is set. The page is built for a
 
 ## 8. Password entry
 
-Turn on: `python3 tools/set_password.py "the password"` (needs Python; or send the password to whoever manages the site). It stores only a scrambled version in `config.js`. Turn off: `python3 tools/set_password.py --off`. Commit `config.js` to publish. The QR landing page (`links.html`) stays open on purpose; change `gate.exempt` in `config.js` to gate it too.
+Turn on: `python3 tools/set_password.py "the password"` (needs Python; or send the password to whoever manages the site). It stores only a scrambled version in `config.js`. Turn off: `python3 tools/set_password.py --off`. Commit `config.js` to publish. Every page is locked, including the QR landing page (`links.html`). To leave a page open, add its file name to `gate.exempt` in `config.js`.
 
 Honest limits: this is a front door for a static site. It keeps casual visitors out. Anyone determined can read the page files, so don't treat it as bank-grade security, and pick a password that isn't a common word.
 

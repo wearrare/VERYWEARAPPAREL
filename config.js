@@ -28,11 +28,11 @@ window.WR = {
   // This is a front door for a static site. It keeps casual visitors out; it is not bank-grade security.
   gate: {
     enabled: true,
-    passwordHash: "",          // filled in by tools/set_password.py (blank = no password screen)
+    passwordHash: "44006c6a6787a04c62b5b365cee25950b237b8bdfe864bbd9f332f94c050e6e8",          // filled in by tools/set_password.py (blank = no password screen)
     salt: "wear-rare-7f3a",
     remember: true,            // stay unlocked on this device (false = ask every visit)
     hint: "",                  // optional line under the box, e.g. "Check your invite."
-    exempt: ["links.html"]     // pages that stay open (the QR landing page)
+    exempt: []                 // pages that stay open without the password (none: everything is locked)
   },
 
   // ---- music -----------------------------------------------
