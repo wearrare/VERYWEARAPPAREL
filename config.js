@@ -46,6 +46,18 @@ window.WR = {
     ]
   },
 
+  // ---- email sign-up ("The list") --------------------------
+  // Leave action blank and the sign-up box stays hidden. Paste the form's POST address from your email tool.
+  // Google Form: action = the form's .../formResponse address, emailField = "entry.123456789" (find it in the form's pre-filled link)
+  // MailerLite / Mailchimp / Brevo: action = the embedded form's action="..." address, emailField = its email input name
+  signup: {
+    action: "",
+    emailField: "email",
+    nameField: "",             // optional, same idea
+    extra: {},                 // any hidden fields the tool needs, e.g. { u: "...", id: "..." }
+    thanks: "You're on the list. Watch your inbox."
+  },
+
   // ---- where requests go ----------------------------------
   // Option A (recommended): a free form service that emails you every request.
   //   Web3Forms  -> formEndpoint: "https://api.web3forms.com/submit", formAccessKey: "YOUR_KEY"

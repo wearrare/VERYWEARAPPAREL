@@ -40,6 +40,17 @@ def page(fname, title, desc, body, wide_title=None):
 <button class="bagbtn" data-open-bag>Bag (<span data-bag-count>0</span>)</button></div></nav>
 <main id="main">
 {body}
+<section class="su" data-signup hidden><div class="wrap"><div class="su-box">
+<span class="mono mute">The list</span>
+<h2 class="disp" style="font-size:clamp(34px,6vw,52px);margin:8px 0 8px">First look at new pieces</h2>
+<p class="mute" style="margin:0 0 16px;max-width:46ch">New drops, appointment openings and events, sent straight to you. Unsubscribe any time.</p>
+<form class="su-form" novalidate>
+<input type="text" name="name" placeholder="First name" autocomplete="given-name" aria-label="First name">
+<input type="email" name="email" placeholder="Email" autocomplete="email" required aria-label="Email">
+<input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+<button type="submit">Join</button></form>
+<p class="su-msg mono" role="status" aria-live="polite"></p>
+</div></div></section>
 </main>
 <footer class="site"><div class="wrap">
 <div class="cols">
@@ -57,6 +68,7 @@ def page(fname, title, desc, body, wide_title=None):
 <noscript><div class="notice">The shop, bag and booking need JavaScript. You can always reach him on <a href="https://instagram.com/{IG}">Instagram @{IG}</a>.</div></noscript>
 <script src="products.js"></script>
 <script src="app.js"></script>
+<script src="signup.js"></script>
 <script src="music.js"></script>
 </body>
 </html>

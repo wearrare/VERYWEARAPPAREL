@@ -74,3 +74,9 @@ Honest limits: this is a front door for a static site. It keeps casual visitors 
 1. Upload mp3 files to the `music/` folder (keep each under about 10 MB).
 2. In `config.js`, under `music.tracks`, add `{ title: "Track name", src: "music/track-name.mp3" }` for each one.
 3. Commit. A small player bar appears at the bottom of every page and starts when a visitor enters. Phones sometimes block sound until one tap on the play button.
+
+## 10. Email sign-up ("The list")
+
+A sign-up box sits above the footer on every page. It stays hidden until `signup.action` in `config.js` has an address. Make an account with an email tool (see below), create a sign-up form there, and copy two things from its embed code: the form's `action="..."` address and the name of its email field. Paste them into `signup.action` and `signup.emailField`. Some tools also need hidden fields; paste those into `signup.extra`.
+
+Send updates from that same tool, not from a personal inbox. It handles unsubscribe links and spam rules for you, which the law requires for marketing email.

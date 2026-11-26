@@ -213,3 +213,16 @@ noscript .notice { margin: 20px var(--gutter); }
 .wr-music.wr-hint { animation: wrpulse 1.4s ease-in-out 3; }
 @keyframes wrpulse { 50% { box-shadow: 3px 3px 0 var(--ink), 0 0 0 4px rgba(17,17,17,.25); } }
 @media (max-width: 520px) { .wr-music .wr-ttl { max-width: 24vw; } }
+
+/* email sign-up */
+.su { padding: 56px 0; border-top: 1px solid var(--line); background: var(--wash); }
+.su[hidden] { display: none; }
+.su-box { max-width: 620px; margin: 0 auto; text-align: center; border: 1px solid var(--ink); background: var(--paper); padding: 34px 24px; position: relative; }
+.su-box::after { content: ""; position: absolute; inset: 5px; border: 1px solid var(--ink); opacity: .35; pointer-events: none; }
+.su-box p { margin-left: auto; margin-right: auto; }
+.su-form { display: grid; grid-template-columns: 1fr 1.4fr auto; gap: 10px; text-align: left; }
+.su-form input { font: 16px "Baskerville", Georgia, serif; padding: 12px; border: 1px solid var(--ink); background: #fff; color: var(--ink); border-radius: 0; min-width: 0; }
+.su-form button { font: 700 20px "Shoulders", Impact, sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 0 22px; background: var(--ink); color: var(--paper); border: 1px solid var(--ink); cursor: pointer; border-radius: 0; }
+.su-form button:hover, .su-form button:focus-visible { background: var(--paper); color: var(--ink); }
+.su-msg { min-height: 1.4em; margin: 12px 0 0; }
+@media (max-width: 600px) { .su-form { grid-template-columns: 1fr; } .su-form button { padding: 12px; } }
