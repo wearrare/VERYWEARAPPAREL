@@ -1,7 +1,10 @@
 /* ============================================================
    THE COLLECTION  -  one entry per piece.
 
-   HOW TO ADD A PIECE
+   FASTEST WAY (many pieces): fill the tee spreadsheet, then run tools/import_pieces.py (see README section 11).
+   The block between IMPORTED:START and IMPORTED:END is managed by that tool.
+
+   HOW TO ADD ONE PIECE BY HAND
    1. Upload photos to the images/pieces/ folder (on GitHub: Add file > Upload files).
    2. Copy one block below, paste it at the TOP of the list, and fill it in.
    3. Commit. The site updates in about a minute.
@@ -32,12 +35,11 @@
    },
    ============================================================ */
 window.WR_PRODUCTS = [
+  /* IMPORTED:START */
   { id: "WR-001", name: "Piece 001", status: "coming", category: "Tees" },
-  { id: "WR-002", name: "Piece 002", status: "coming", category: "Designer" },
-  { id: "WR-003", name: "Piece 003", status: "coming", category: "Outerwear" },
-  { id: "WR-004", name: "Piece 004", status: "coming", category: "Accessories" },
-  { id: "WR-005", name: "Piece 005", status: "coming", category: "Tees" },
-  { id: "WR-006", name: "Piece 006", status: "coming", category: "Designer" },
+  { id: "WR-002", name: "Piece 002", status: "coming", category: "Tees" },
+  { id: "WR-003", name: "Piece 003", status: "coming", category: "Tees" },
+  /* IMPORTED:END */
   { id: "AR-001", name: "Archive Plate 001", status: "coming", category: "Archive" },
   { id: "AR-002", name: "Archive Plate 002", status: "coming", category: "Archive" },
   { id: "AR-003", name: "Archive Plate 003", status: "coming", category: "Archive" }

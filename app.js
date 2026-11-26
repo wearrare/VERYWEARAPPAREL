@@ -154,8 +154,10 @@
 
   /* ---------- pieces ---------- */
   var TAG = { available: "", hold: "On hold", sold: "Sold", archive: "Archive", coming: "Coming soon" };
+  function thumb(f) { return /^https?:/.test(f) ? f : f.replace(/\.jpg$/, "-t.jpg"); }
   function plate(p) {
     var cover = p.images && p.images[0], alt = p.images && p.images[1];
+    if (p.thumbs) { cover = cover && thumb(cover); alt = alt && thumb(alt); }
     var live = p.status !== "coming";
     var html = '<div class="photo">' +
       (cover ? '<img src="' + esc(imgPath(cover)) + '" alt="' + esc(p.name) + '" loading="lazy">' + (alt ? '<img class="alt" src="' + esc(imgPath(alt)) + '" alt="" loading="lazy">' : "")
@@ -171,7 +173,8 @@
   function openPiece(id) {
     var p = byId(id), body = $("[data-body]", pieceDlg), imgs = p.images || [];
     $("[data-pno]", pieceDlg).textContent = "No. " + p.id;
-    var spec = [["Label", p.label], ["Era", p.era], ["Size", p.size], ["Condition", p.condition], ["Category", p.category]].filter(function (r) { return r[1]; });
+    var spec = [["Label", p.label], ["Era", p.era], ["Size", p.size], ["Condition", p.condition], ["Category", p.category],
+      ["Pit to pit", p.pit && p.pit + " in"], ["Length", p.length && p.length + " in"], ["Shoulder", p.shoulder && p.shoulder + " in"], ["Sleeve", p.sleeve && p.sleeve + " in"]].filter(function (r) { return r[1]; });
     var action;
     if (isBuyable(p)) action = inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>";
     else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message him</a>.</p>';

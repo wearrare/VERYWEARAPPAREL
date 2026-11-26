@@ -80,3 +80,15 @@ Honest limits: this is a front door for a static site. It keeps casual visitors 
 A sign-up box sits above the footer on every page. It stays hidden until `signup.action` in `config.js` has an address. Make an account with an email tool (see below), create a sign-up form there, and copy two things from its embed code: the form's `action="..."` address and the name of its email field. Paste them into `signup.action` and `signup.emailField`. Some tools also need hidden fields; paste those into `signup.extra`.
 
 Send updates from that same tool, not from a personal inbox. It handles unsubscribe links and spam rules for you, which the law requires for marketing email.
+
+## 11. Adding many pieces at once (the tee sheet)
+
+1. Fill the tee spreadsheet (one row per shirt: name, label, era, tag size, condition, measurements, price, number of photos). A row needs an ID, a name and a price to go live.
+2. Export it: **File > Download > Comma separated values (.csv)**.
+3. Put the batch's photos in one folder. Either name them `VWA-014_1.jpg`, `VWA-014_2.jpg` (ID, underscore, photo number; 1 is the cover), or leave the phone names and set the **Photos** column: photos are handed out in ID order.
+4. Check: `python3 tools/import_pieces.py sheet.csv photos-folder` shows what will happen and makes a contact sheet picture to eyeball.
+5. Publish: add `--write`, then commit and push. The tool shrinks photos, makes the small grid pictures, and updates `products.js`.
+
+Needs Python 3 with Pillow (`pip install pillow`; add `pillow-heif` for iPhone HEIC photos). Or send the CSV and the photos to whoever manages the site and they run it.
+
+Measurements shown on each piece: pit to pit (laid flat, armpit seam to armpit seam), length (back of collar to hem), shoulder (seam to seam), sleeve (shoulder seam to cuff). Inches.
