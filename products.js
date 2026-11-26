@@ -40,7 +40,7 @@ window.WR_PRODUCTS = [
   { id: "WR-002", name: "Piece 002", status: "coming", category: "Tees" },
   { id: "WR-003", name: "Piece 003", status: "coming", category: "Tees" },
   /* IMPORTED:END */
-  { id: "AR-001", name: "Archive Piece 001", status: "coming", category: "Archive" },
-  { id: "AR-002", name: "Archive Piece 002", status: "coming", category: "Archive" },
-  { id: "AR-003", name: "Archive Piece 003", status: "coming", category: "Archive" }
+  { id: "AR-001", name: "Archive Plate 001", status: "coming", category: "Archive" },
+  { id: "AR-002", name: "Archive Plate 002", status: "coming", category: "Archive" },
+  { id: "AR-003", name: "Archive Plate 003", status: "coming", category: "Archive" }
 ];

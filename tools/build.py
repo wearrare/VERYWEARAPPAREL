@@ -106,7 +106,7 @@ home = f"""
 <div class="grid g3">
 <div class="panel"><span class="mono mute">01 / Shop</span><h3 class="disp h3">The collection</h3><p>One of one pieces, priced and ready. Add to your bag, pay with Venmo, done.</p><a class="btn sm" href="shop.html">Shop now</a></div>
 <div class="panel"><span class="mono mute">02 / Showroom</span><h3 class="disp h3">By appointment</h3><p>Private visits only, open seven days. Pick a time, browse the racks, and buy on the spot.</p><a class="btn sm" href="book.html">Book a visit</a></div>
-<div class="panel"><span class="mono mute">03 / Stylist</span><h3 class="disp h3">Get Styled</h3><p>Personal styling, closet edits, and sourcing from someone fluent in the houses.</p><a class="btn sm" href="stylist.html">See services</a></div>
+<div class="panel"><span class="mono mute">03 / Stylist</span><h3 class="disp h3">Style with us</h3><p>Personal styling, closet edits, and sourcing from someone fluent in the houses.</p><a class="btn sm" href="stylist.html">See services</a></div>
 </div></div></section>
 
 <section style="padding-top:0"><div class="wrap">
@@ -130,7 +130,7 @@ page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <div class="notice" style="margin-top:34px"><span class="mono">How it works</span>
-<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed by message, and pickup at the showroom or shipping is arranged. Looking for something specific? <a href="stylist.html">Ask us to source it</a>.</p></div>
+<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed and pickup at the showroom or shipping is arranged. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
 </div></section>"""
 page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
 
@@ -141,25 +141,25 @@ archive = head("Value beyond money", "The Archive",
 <div class="grid g2" style="margin-bottom:40px">
 <div><h2 class="disp h2" style="margin-bottom:14px">Clothing as collection</h2>
 <p>Price tells you what something costs. It doesn't tell you what it is. In the Archive, pieces are kept for their craft, their era, their cut, and the culture they carry, and shown the way a gallery shows a work.</p>
-<p>Some archive pieces eventually find a new keeper. Most stay. Ask about any piece.</p></div>
+<p>Some archive pieces eventually find a new keeper. Most stay. Ask about any plate.</p></div>
 <div><span class="mono mute">What We Look At</span>
 <ul class="list" style="margin-top:12px">
 <li><span>Label &amp; construction</span><span class="mono mute">01</span></li>
 <li><span>Era &amp; provenance</span><span class="mono mute">02</span></li>
 <li><span>Condition &amp; wear</span><span class="mono mute">03</span></li>
 <li><span>Cultural weight</span><span class="mono mute">04</span></li></ul></div></div>
-<div class="sec-head"><h2 class="disp h3">The Archive Pieces</h2><span class="mono mute">Not for sale unless noted</span></div>
+<div class="sec-head"><h2 class="disp h3">The plates</h2><span class="mono mute">Not for sale unless noted</span></div>
 <div data-mount="archive"></div>
 </div></section>"""
 page("archive.html", "The Archive | Very Wear Apparel", "Vintage clothing and accessories as an art collection with value far beyond money.", archive)
 
 # ---------------------------------------------------------------- STYLIST
-stylist = head("Services", "Stylist", "Deep knowledge of the houses, the seasons, and the stitching. Bring a closet, an occasion, or a grail you can't find, and we'll build from there.") + """
+stylist = head("Services", "Stylist", "Fluent in the houses, the seasons, and the stitching. Bring a closet, an occasion, or a grail you can't find, and we'll build from there.") + """
 <section><div class="wrap">
 <div data-mount="services"></div>
 <div class="grid g2" style="margin-top:44px">
 <div class="panel"><span class="mono mute">Fluent in</span><h3 class="disp h3">The houses</h3><p>Chanel, Gucci, Christian Dior, Rick Owens, and the wider world of designer and archive fashion. Ask about a label, a season, a stitch.</p></div>
-<div class="panel"><span class="mono mute">How it works</span><h3 class="disp h3">Request, confirm, meet</h3><p>Choose a service and a time on the booking page. You'll get a confirmation by message, then you meet at the showroom or online.</p><a class="btn sm" href="book.html">Book now</a></div>
+<div class="panel"><span class="mono mute">How it works</span><h3 class="disp h3">Request, confirm, meet</h3><p>Choose a service and a time on the booking page. It gets confirmed by message, then you meet at the showroom or online.</p><a class="btn sm" href="book.html">Book now</a></div>
 </div></div></section>"""
 page("stylist.html", "Stylist | Very Wear Apparel", "Personal styling, closet edits and sourcing from a stylist fluent in Chanel, Gucci, Dior and Rick Owens.", stylist)
 
@@ -191,7 +191,7 @@ sip = head("By invitation", "Sip &amp; Thrift", "An evening in the showroom. Tea
 page("sip-thrift.html", "Sip & Thrift | Very Wear Apparel", "An invitation-only evening of tea, drinks and rare vintage in the Very Wear Apparel showroom.", sip)
 
 # ---------------------------------------------------------------- BOOK
-book = head("Appointment only", "Book the showroom", "The showroom opens by appointment. Choose what you'd like, pick a day and time, and you'll get a confirmation by message. South Carolina based.") + """
+book = head("Appointment only", "Book the showroom", "The showroom opens by appointment. Choose what you'd like, pick a day and time, and it will be confirmed. South Carolina based.") + """
 <section><div class="wrap" style="max-width:820px"><div data-mount="booking"></div></div></section>"""
 page("book.html", "Book an appointment | Very Wear Apparel", "Request a private showroom visit, styling session, closet edit or sourcing consult with Very Wear Apparel.", book)
 
