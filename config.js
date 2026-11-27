@@ -87,7 +87,7 @@ window.WR = {
   //   or leave everything blank and requests go to his Instagram DM.
   formEndpoint: "",
   formAccessKey: "",
-  email: "",
+  email: "marzsoul@gmail.com",
 
   // ---- showroom (appointment only) -------------------------
   showroomNote: "South Carolina based. The showroom address is shared with confirmed guests only.",
