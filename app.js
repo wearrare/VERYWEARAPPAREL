@@ -309,7 +309,7 @@
       var grid = el('<div class="grid g3"></div>');
       function draw() {
         chips.innerHTML = "";
-        ["All"].concat(cats).forEach(function (c) { chips.appendChild(chip(c, state.cat === c, function () { state.cat = c; draw(); })); });
+        ["All"].concat(cats).forEach(function (c) { chips.appendChild(chip(c, state.cat === c, function () { state.cat = c; if (c === "All") state.onlyAvail = false;; draw(); })); });
         chips.appendChild(chip("Available only", state.onlyAvail, function () { state.onlyAvail = !state.onlyAvail; draw(); }));
         sizeRow.innerHTML = "";
         if (sizes.length > 1) {
