@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wearrare.github.io/VERYWEARAPPAREL/sitemap.xml

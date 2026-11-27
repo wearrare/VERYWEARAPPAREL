@@ -212,8 +212,9 @@
       (TAG[p.status] ? '<span class="tag">' + TAG[p.status] + "</span>" : "") + "</div>" +
       '<div class="meta"><div class="row2"><span class="name">' + esc(p.name) + "</span>" + (isBuyable(p) ? "<strong>" + money(p.price) + "</strong>" : "") + "</div>" +
       '<span class="mono mute">' + esc([p.label, p.era, p.size && "Size " + p.size].filter(Boolean).join("  /  ") || p.id) + "</span></div>";
-    var n = el(live ? '<button class="plate ' + esc(p.status) + '" data-pid="' + esc(p.id) + '">' + html + "</button>" : '<div class="plate ' + esc(p.status) + '" data-pid="' + esc(p.id) + '" style="cursor:default">' + html + "</div>");
-    if (live) n.addEventListener("click", function () { openPiece(p.id); });
+    var hasPage = live && p.status !== "archive" && p.category !== "Archive" && p.images && p.images.length;
+    var n = el(hasPage ? '<a class="plate ' + esc(p.status) + '" data-pid="' + esc(p.id) + '" href="piece-' + esc(p.id.toLowerCase()) + '.html">' + html + "</a>" : live ? '<button class="plate ' + esc(p.status) + '" data-pid="' + esc(p.id) + '">' + html + "</button>" : '<div class="plate ' + esc(p.status) + '" data-pid="' + esc(p.id) + '" style="cursor:default">' + html + "</div>");
+    if (live) n.addEventListener("click", function (e) { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); openPiece(p.id); });
     return n;
   }
   function syncButtons() { /* hook for future per-card state */ }
@@ -495,5 +496,5 @@
   }
 
   $$("[data-cfg]").forEach(function (n) { var v = n.getAttribute("data-cfg").split(".").reduce(function (o, k) { return o && o[k]; }, SH); if (v != null) n.textContent = money(v); });
-  mountChrome(); mountNav(); $$('[data-mount="intl"]').forEach(function (r) { renderCheckout(r, "intl"); }); mountPieces(); mountServices(); mountForms(); mountBooking();
+  mountChrome(); mountNav(); $$('[data-mount="intl"]').forEach(function (r) { renderCheckout(r, "intl"); }); mountPieces(); (function () { var h = decodeURIComponent(location.hash.slice(1)); if (h && byId(h) && $('[data-mount="shop"]')) openPiece(h); })(); mountServices(); mountForms(); mountBooking();
 })();

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Generates the static HTML pages. Run from the repo root:  python3 tools/build.py
 Edit copy here, run it, commit the HTML. Prices, hours, links live in config.js / products.js."""
-import os, html
+import os, html, json, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE = "https://wearrare.github.io/VERYWEARAPPAREL/"   # if the site moves to its own domain, change this and re-run build.py + seo step
+DEFAULT_OG = "images/sip-and-thrift-flyer.png"
 IG, SAGE, DEPOP, VENMO = "very_wear_apparel", "sagejoygold", "illa9", "very_wear_apparel"
 
 NAV = [("shop.html", "Shop"), ("archive.html", "The Archive"), ("stylist.html", "Stylist"),
@@ -12,7 +14,11 @@ NAV = [("shop.html", "Shop"), ("archive.html", "The Archive"), ("stylist.html", 
 FAV = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf8f3'/%3E%3Cpath d='M16 3l13 13-13 13L3 16z' fill='%23111'/%3E%3C/svg%3E"
 
 
-def page(fname, title, desc, body, wide_title=None):
+def page(fname, title, desc, body, wide_title=None, og=None, ld=None, og_type="website", logo_tag="h1"):
+    canon = SITE if fname == "index.html" else SITE + fname
+    og_url = (og or DEFAULT_OG)
+    og_url = og_url if og_url.startswith("http") else SITE + og_url
+    ld_tag = "" if not ld else '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/") + "</script>"
     nav = "".join(f'<li><a href="{h}">{t}</a></li>' for h, t in NAV)
     out = f"""<!doctype html>
 <html lang="en">
@@ -23,7 +29,16 @@ def page(fname, title, desc, body, wide_title=None):
 <meta name="description" content="{html.escape(desc)}">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
-<meta property="og:image" content="images/sip-and-thrift-flyer.png">
+<link rel="canonical" href="{canon}">
+<meta property="og:type" content="{og_type}">
+<meta property="og:site_name" content="Very Wear Apparel">
+<meta property="og:url" content="{canon}">
+<meta property="og:image" content="{og_url}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{html.escape(title)}">
+<meta name="twitter:description" content="{html.escape(desc)}">
+<meta name="twitter:image" content="{og_url}">
+{ld_tag}
 <meta name="theme-color" content="#faf8f3">
 <link rel="icon" href="{FAV}">
 <link rel="stylesheet" href="styles.css">
@@ -34,7 +49,7 @@ def page(fname, title, desc, body, wide_title=None):
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="strip"><div class="wrap mono"><span>Vintage curation</span><span>South Carolina &middot; Appointment-only showroom</span><span>@{IG}</span></div></div>
-<header class="mast"><a href="index.html" aria-label="Very Wear Apparel home"><h1 class="logo shoulders">Very Wear Apparel</h1></a>
+<header class="mast"><a href="index.html" aria-label="Very Wear Apparel home"><{logo_tag} class="logo shoulders">Very Wear Apparel</{logo_tag}></a>
 <div class="sub mono mute">The Holy Haberdashery &middot; Excellently curated gems</div></header>
 <nav class="nav" aria-label="Main"><div class="wrap"><ul>{nav}</ul>
 <button class="bagbtn" data-open-bag>Bag (<span data-bag-count>0</span>)</button></div></nav>
@@ -123,8 +138,12 @@ home = f"""
 <hr class="rule2"><p class="mono mute" style="text-align:center;margin:16px 0">Find us at pop-ups &amp; markets &middot; T-Street &middot; ThriftCon ATL &middot; NC Bazaar &middot; PunkFlea &middot; The Senate &middot; USC</p><hr class="rule2">
 </div></section>
 """
-page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
-     "A curated vintage collection of rare garments and accessories. Shop one-of-one pieces, book the showroom, and work with a stylist fluent in Chanel, Gucci, Dior and Rick Owens.", home)
+page("index.html", "Very Wear Apparel | Vintage Tees and Rare Pieces, South Carolina",
+     "Very Wear Apparel is a curated vintage shop in South Carolina. One-of-one vintage band, anime, movie and wrestling tees plus rare garments, shipped across the US and worldwide. Book the showroom or work with a stylist.", home,
+     ld={"@context": "https://schema.org", "@type": "ClothingStore", "name": "Very Wear Apparel", "url": SITE,
+         "image": SITE + DEFAULT_OG, "description": "Curated vintage clothing: one-of-one vintage tees and rare garments.",
+         "address": {"@type": "PostalAddress", "addressRegion": "SC", "addressCountry": "US"},
+         "sameAs": [f"https://instagram.com/{IG}", f"https://www.depop.com/{DEPOP}"]})
 
 # ---------------------------------------------------------------- SHOP
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
@@ -314,3 +333,53 @@ links_html = f"""<!doctype html>
 """
 open(os.path.join(ROOT, "links.html"), "w", encoding="utf-8").write(links_html)
 print("built pages")
+
+# ---------------------------------------------------------------- PIECE PAGES, SITEMAP, ROBOTS
+try:
+    raw = subprocess.check_output(["node", "-e", "var window={};" + open(os.path.join(ROOT, "products.js"), encoding="utf-8").read() + ";console.log(JSON.stringify(window.WR_PRODUCTS))"])
+    PRODUCTS = json.loads(raw)
+except Exception as e:
+    print("skipped piece pages (node needed):", e); PRODUCTS = []
+
+def pimg(f): return f if f.startswith("http") else (f if f.startswith("images/") else "images/pieces/" + f)
+def money(n): return "$" + (str(int(n)) if float(n) == int(n) else f"{n:.2f}")
+
+# clear old generated piece pages
+for fn in os.listdir(ROOT):
+    if fn.startswith("piece-") and fn.endswith(".html"): os.remove(os.path.join(ROOT, fn))
+
+urls = ["", "shop.html", "faq.html", "international.html", "archive.html", "stylist.html", "sip-thrift.html", "book.html", "about.html"]
+for p in PRODUCTS:
+    if p.get("status") == "archive" or p.get("category") == "Archive" or not p.get("images"): continue
+    pid, name = p["id"], p["name"]
+    fname = f"piece-{pid.lower()}.html"
+    imgs = [pimg(i) for i in p["images"]]
+    bits = [b for b in [p.get("label"), p.get("era"), ("Size " + p["size"]) if p.get("size") else None] if b]
+    status = p.get("status", "available")
+    avail = {"available": "https://schema.org/InStock", "sold": "https://schema.org/SoldOut", "hold": "https://schema.org/LimitedAvailability"}.get(status)
+    meas = ", ".join(x for x in [f"pit to pit {p['pit']} in" if p.get("pit") else "", f"length {p['length']} in" if p.get("length") else ""] if x)
+    desc = f"{name}: vintage {p.get('category','tee').rstrip('s').lower()}" + (f", {p['era']}" if p.get("era") else "") + (f", {p['label']}" if p.get("label") else "") + (f", size {p['size']}" if p.get("size") else "") + (f", {p['condition'].lower()}" if p.get("condition") else "") + (f". {meas[0].upper() + meas[1:]}" if meas else "") + (f". {money(p['price'])}" if isinstance(p.get("price"), (int, float)) else "") + ". One of one, from Very Wear Apparel in South Carolina."
+    title = f"{name} | Vintage {p.get('era','')} {p.get('category','Tee').rstrip('s')} | Very Wear Apparel".replace("  ", " ")
+    ld = {"@context": "https://schema.org", "@type": "Product", "name": name, "sku": pid, "image": [SITE + i if not i.startswith("http") else i for i in imgs[:6]],
+          "description": desc, "category": p.get("category", "Tees")}
+    if p.get("label"): ld["brand"] = {"@type": "Brand", "name": p["label"]}
+    if isinstance(p.get("price"), (int, float)) and avail:
+        ld["offers"] = {"@type": "Offer", "url": SITE + fname, "priceCurrency": "USD", "price": p["price"], "availability": avail,
+                        "itemCondition": "https://schema.org/UsedCondition", "seller": {"@type": "Organization", "name": "Very Wear Apparel"}}
+    rows = [("Label", p.get("label")), ("Era", p.get("era")), ("Size", p.get("size")), ("Condition", p.get("condition")), ("Pit to pit", f"{p['pit']} in" if p.get("pit") else None), ("Length", f"{p['length']} in" if p.get("length") else None), ("Shoulder", f"{p['shoulder']} in" if p.get("shoulder") else None), ("Sleeve", f"{p['sleeve']} in" if p.get("sleeve") else None)]
+    spec = "".join(f"<dt>{k}</dt><dd>{html.escape(str(v))}</dd>" for k, v in rows if v)
+    photos = "".join(f'<img src="{i}" alt="{html.escape(name)} photo {n+1}" loading="{"eager" if n == 0 else "lazy"}" style="width:100%;border:1px solid var(--ink);margin:0 0 14px">' for n, i in enumerate(imgs))
+    price_html = f'<p style="font-size:24px;margin:10px 0 0">{money(p["price"])}</p>' if isinstance(p.get("price"), (int, float)) and status == "available" else f'<p class="mono mute">{ {"sold": "Sold", "hold": "On hold", "coming": "Coming soon"}.get(status, "") }</p>'
+    body = f"""<section><div class="wrap"><p class="mono mute"><a href="shop.html">Shop</a> / No. {pid}</p>
+<div class="piece" style="margin-top:14px"><div>{photos}</div>
+<div><h1 class="disp h2">{html.escape(name)}</h1>{price_html}
+<dl class="spec">{spec}</dl>
+<p><a class="btn" href="shop.html#{pid}">{'Add to bag in the shop' if status == 'available' else 'Back to the shop'}</a></p>
+<p class="hint">Every piece is one of one and sold as shown. US shipping is $14 for one piece, $20 for 2 to 3. International shipping is priced by country at checkout. Ships within 2 to 7 days of payment. All sales are final. Details are on the <a href="faq.html">FAQ</a>.</p></div></div></div></section>"""
+    page(fname, title, desc, body, og=imgs[0], ld=ld, og_type="product", logo_tag="div")
+    urls.append(fname)
+
+sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>{SITE}{u}</loc></url>\n" for u in urls) + "</urlset>\n"
+open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8").write(sm)
+open(os.path.join(ROOT, "robots.txt"), "w", encoding="utf-8").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}sitemap.xml\n")
+print("built", len(urls), "urls in sitemap")

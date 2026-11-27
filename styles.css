@@ -266,3 +266,4 @@ summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 /* keep the drop-list pop-up out of the way while the bag is open */
 body:has(.drawer.open) .su-pop { display: none; }
 .piece > div { min-width: 0; }
+a.plate { text-decoration: none; }
