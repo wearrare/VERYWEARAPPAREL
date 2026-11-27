@@ -267,3 +267,8 @@ summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 body:has(.drawer.open) .su-pop { display: none; }
 .piece > div { min-width: 0; }
 a.plate { text-decoration: none; }
+
+.pager { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; margin: 36px 0 8px; }
+.pager[hidden] { display: none; }
+.pager .chip:disabled { opacity: .35; cursor: default; }
+.pager-note { width: 100%; text-align: center; margin-top: 6px; }

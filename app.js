@@ -298,7 +298,7 @@
     $$('[data-mount="shop"]').forEach(function (root) {
       var list = PRODUCTS.filter(function (p) { return p.status !== "archive" && p.category !== "Archive"; });
       var cats = []; list.forEach(function (p) { if (p.category && cats.indexOf(p.category) < 0) cats.push(p.category); });
-      var state = { cat: "All", onlyAvail: false, sizes: [] };
+      var state = { cat: "All", onlyAvail: false, sizes: [], page: 1 }, PER = 12, lastSig = "";
       var SZ = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"], sizes = [];
       list.forEach(function (p) { var z = (p.size || "").toUpperCase().replace("XXL", "2XL"); if (z && sizes.indexOf(z) < 0) sizes.push(z); });
       sizes.sort(function (x, y) { var i = SZ.indexOf(x), j = SZ.indexOf(y); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j) || (x < y ? -1 : 1); });
@@ -306,7 +306,8 @@
       function sz(p) { return (p.size || "").toUpperCase().replace("XXL", "2XL"); }
       var chips = el('<div class="chips" role="group" aria-label="Filter pieces"></div>');
       function chip(label, on, fn) { var b = el('<button class="chip" aria-pressed="' + on + '">' + esc(label) + "</button>"); b.addEventListener("click", fn); return b; }
-      var grid = el('<div class="grid g3"></div>');
+      var grid = el('<div class="grid g3"></div>'), pager = el('<nav class="pager" aria-label="Pages"></nav>');
+      function go(n) { state.page = n; draw(); var t = chips.getBoundingClientRect().top + window.pageYOffset - 90; window.scrollTo({ top: Math.max(0, t), behavior: "smooth" }); }
       function draw() {
         chips.innerHTML = "";
         ["All"].concat(cats).forEach(function (c) { chips.appendChild(chip(c, state.cat === c, function () { state.cat = c; if (c === "All") state.onlyAvail = false;; draw(); })); });
@@ -323,9 +324,21 @@
         var order = { available: 0, hold: 1, coming: 2, sold: 3 };
         shown.sort(function (a, b) { return (order[a.status] || 0) - (order[b.status] || 0); });
         if (!shown.length) grid.appendChild(el('<p class="empty" style="grid-column:1/-1">Nothing here right now. New pieces land often, follow <a href="https://instagram.com/' + C.igHandle + '">@' + esc(C.igHandle) + "</a>.</p>"));
-        shown.forEach(function (p) { grid.appendChild(plate(p)); });
+        var sig = state.cat + "|" + state.onlyAvail + "|" + state.sizes.join(",");
+        if (sig !== lastSig) { state.page = 1; lastSig = sig; }
+        var pages = Math.max(1, Math.ceil(shown.length / PER)); if (state.page > pages) state.page = pages;
+        var from = (state.page - 1) * PER;
+        shown.slice(from, from + PER).forEach(function (p) { grid.appendChild(plate(p)); });
+        pager.innerHTML = ""; pager.hidden = pages < 2;
+        if (pages > 1) {
+          var pb = function (label, n, on, dis, aria) { var b = el('<button class="chip" aria-label="' + esc(aria || "Page " + label) + '" aria-pressed="' + on + '"' + (dis ? " disabled" : "") + ">" + label + "</button>"); if (!dis) b.addEventListener("click", function () { go(n); }); return b; };
+          pager.appendChild(pb("&#8249; Prev", state.page - 1, false, state.page === 1, "Previous page"));
+          for (var i = 1; i <= pages; i++) pager.appendChild(pb(String(i), i, i === state.page, false));
+          pager.appendChild(pb("Next &#8250;", state.page + 1, false, state.page === pages, "Next page"));
+          pager.appendChild(el('<span class="mono mute pager-note">Showing ' + (from + 1) + " to " + Math.min(from + PER, shown.length) + " of " + shown.length + "</span>"));
+        }
       }
-      root.appendChild(chips); root.appendChild(sizeRow); root.appendChild(count); root.appendChild(grid); draw();
+      root.appendChild(chips); root.appendChild(sizeRow); root.appendChild(count); root.appendChild(grid); root.appendChild(pager); draw();
     });
     $$('[data-mount="featured"]').forEach(function (root) {
       var n = +root.getAttribute("data-limit") || 3;
