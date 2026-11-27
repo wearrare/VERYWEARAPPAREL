@@ -130,13 +130,21 @@ page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <div class="notice" style="margin-top:34px"><span class="mono">How it works</span>
-<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Shipping is paid with your order and we ship after your payment arrives. Want to make an offer? Tap a piece and choose Make An Offer. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
+<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Shipping is paid with your order and we ship after your payment arrives. All sales are final. Want to make an offer? Tap a piece and choose Make An Offer. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
 <div class="grid g2" style="margin-top:22px">
-<div class="notice"><span class="mono">Shipping In The United States</span><p style="margin:8px 0 0">One flat price per order, paid at checkout. Ships by USPS with tracking, usually 2 to 5 business days after we send it.</p></div>
-<div class="notice"><span class="mono">International Shipping</span><p style="margin:8px 0 0">One flat price per order, paid at checkout. Ships by USPS with a customs form, and tracking is included for most countries. Delivery takes about 1 to 4 weeks and is not guaranteed. Import duties, taxes and fees set by your country are not included and are paid by the buyer on delivery. A few countries restrict used clothing, so message us first if you are unsure.</p></div></div>
+<div class="notice"><span class="mono">Shipping In The United States</span><p style="margin:8px 0 0">Paid at checkout. 1 piece: $14. 2 to 3 pieces: $20. For 4 or more pieces, <a href="https://ig.me/m/very_wear_apparel" target="_blank" rel="noopener">message us for shipping</a>. Ships by USPS Ground Advantage. <strong>Local pickup is free</strong> in Columbia, SC and nearby towns: choose Local Pickup at checkout.</p></div>
+<div class="notice"><span class="mono">International Shipping</span><p style="margin:8px 0 0">The price depends on your country and is shown at checkout. It comes straight from the USPS price list for First-Class Package International Service. 4 or more pieces: <a href="https://ig.me/m/very_wear_apparel" target="_blank" rel="noopener">message us</a>. Delivery time varies by destination and is not guaranteed, and tracking is available to select countries only. Your country may charge import duties, taxes and fees. If they are not prepaid, the buyer usually pays them. <a href="international.html">International order page</a>.</p></div>
+<div class="notice"><span class="mono">All Sales Final</span><p style="margin:8px 0 0">There are no returns. For questions or inquiries, <a href="https://ig.me/m/very_wear_apparel" target="_blank" rel="noopener">message us on Instagram</a>.</p></div>
+<div class="notice"><span class="mono">Wholesale</span><p style="margin:8px 0 0">Buying in bulk or for a store? <a href="https://ig.me/m/very_wear_apparel" target="_blank" rel="noopener">Message us on Instagram for wholesale</a>.</p></div></div>
 </div></section>
 """
 page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
+
+# ---------------------------------------------------------------- INTERNATIONAL ORDER
+intl = head("Outside the United States", "International Order", "Fill in your details, choose your country, and your shipping price is added to the total before you pay with Venmo.") + """
+<section><div class="wrap"><div data-mount="intl"></div></div></section>
+"""
+page("international.html", "International Order | Very Wear Apparel", "International order page for Very Wear Apparel. Choose your country, see your USPS shipping price, and pay with Venmo.", intl)
 
 # ---------------------------------------------------------------- ARCHIVE
 archive = head("Value beyond money", "The Archive",

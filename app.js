@@ -55,7 +55,23 @@
   var bag = load(BAG_KEY, []).filter(function (id) { var p = byId(id); return p && isBuyable(p); });
   function bagTotal() { return bag.reduce(function (s, id) { return s + byId(id).price; }, 0); }
   var SH = C.shipping || {};
-  function shipCost(key, n) { var o = SH[key] || { price: 0, perExtra: 0 }; return (+o.price || 0) + (+o.perExtra || 0) * Math.max(0, n - 1); }
+  // price for n pieces to a region ("us" or "intl"; intl needs the country). null = message us for shipping.
+  function shipFor(region, n, country) {
+    if (n < 1 || n > (SH.maxPieces || 3)) return null;
+    if (region === "us") return n === 1 ? +SH.us.one : +SH.us.few;
+    var g = SH.intl && SH.intl.countries && SH.intl.countries[country], row = g && SH.intl.groups[g];
+    return row ? row[n === 1 ? 0 : 1] : null;
+  }
+  function sendOrder(fields, subject) {
+    var F = C.orderForm || {};
+    if (!F.action) return deliver(subject, fields);
+    var map = { order: fields.Order, name: fields.Name, email: fields.Email, country: fields.Country, codes: fields.Codes, pieces: fields.Pieces, shipping: fields.ShippingPaid, total: fields.Total, address: fields.Address, notes: fields.Notes };
+    var body = new URLSearchParams();
+    Object.keys(map).forEach(function (k) { if (F.fields && F.fields[k]) body.append(F.fields[k], map[k] == null ? "" : String(map[k])); });
+    return fetch(F.action, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() })
+      .then(function () { return { sent: true, text: "" }; })
+      .catch(function () { return deliver(subject, fields); });
+  }
   function setBag(b) { bag = b; save(BAG_KEY, bag); renderBag(); updateCount(); $$("[data-pid]").forEach(syncButtons); }
   function updateCount() { $$("[data-bag-count]").forEach(function (n) { n.textContent = bag.length; }); }
   function inBag(id) { return bag.indexOf(id) > -1; }
@@ -93,9 +109,12 @@
         "<div><div>" + esc(p.name) + '</div><div class="mono mute">' + esc([p.label, p.size && "Size " + p.size].filter(Boolean).join(" / ")) + '</div><button class="rm" data-rm="' + esc(id) + '">Remove</button></div>' +
         "<div>" + money(p.price) + "</div></div>";
     }).join("");
-    foot.innerHTML = '<div class="total"><span>Subtotal</span><strong>' + money(bagTotal()) + '</strong></div><p class="hint" style="margin:-4px 0 12px">Shipping is added at checkout.</p><button class="btn" style="width:100%" data-checkout>Check Out</button><p class="hint">One of one pieces. Shipping is paid with your order.</p>';
+    foot.innerHTML = '<div class="total"><span>Subtotal</span><strong>' + money(bagTotal()) + '</strong></div><p class="hint" style="margin:-4px 0 12px">Shipping is added at checkout.</p>' +
+      (bag.length > (SH.maxPieces || 3) ? '<div class="notice" style="margin:0 0 12px"><p style="margin:0 0 10px">For 4 or more pieces, message us for shipping.</p><a class="btn sm" href="' + dmLink() + '" target="_blank" rel="noopener">Message Us On Instagram</a></div>' :
+        '<button class="btn" style="width:100%" data-checkout>Check Out - United States</button><a class="btn ghost" style="width:100%;text-align:center;margin-top:10px" href="international.html">Check Out - International</a>') +
+      '<p class="hint">One of one pieces. Shipping is paid with your order. All sales are final.</p>';
     $$("[data-rm]", items).forEach(function (b) { b.addEventListener("click", function () { setBag(bag.filter(function (i) { return i !== b.getAttribute("data-rm"); })); }); });
-    $("[data-checkout]", foot).addEventListener("click", function () { closeBag(); openCheckout(); });
+    var co = $("[data-checkout]", foot); if (co) co.addEventListener("click", function () { closeBag(); openCheckout(); });
   }
 
   /* ---------- checkout / Venmo ---------- */
@@ -104,51 +123,64 @@
     var q = "txn=pay&recipients=" + encodeURIComponent(C.venmo) + "&amount=" + amount + "&note=" + encodeURIComponent(note);
     return { app: "venmo://paycharge?" + q, web: "https://venmo.com/u/" + encodeURIComponent(C.venmo) };
   }
-  function openCheckout() {
-    var body = $("[data-body]", checkDlg);
-    var sub = bagTotal(), n = bag.length;
-    function shipOpts() { return ["us", "intl"].filter(function (k) { return SH[k]; }).map(function (k) { return '<option value="' + k + '">' + esc(SH[k].label + " - " + money(shipCost(k, n))) + "</option>"; }).join(""); }
+  function openCheckout() { renderCheckout($("[data-body]", checkDlg), "us"); checkDlg.showModal(); }
+  function renderCheckout(body, region) {
+    var intl = region === "intl", n = bag.length, sub = bagTotal();
+    if (!n) { body.innerHTML = '<div class="ok"><h2 class="disp h2">Your Bag Is Empty</h2><p class="lede">Add a piece first.</p><a class="btn" href="shop.html">Browse The Collection</a></div>'; return; }
+    var countries = intl ? Object.keys(SH.intl.countries).sort() : [];
     body.innerHTML =
-      '<div class="piece"><form data-co novalidate><h2 class="disp h3" style="margin-bottom:16px">Your Details</h2>' +
+      '<div class="piece"><form data-co novalidate><h2 class="disp h3" style="margin-bottom:16px">' + (intl ? "International Order" : "Your Details") + '</h2>' +
       '<div class="f"><label for="co-name">Name</label><input id="co-name" name="Name" type="text" autocomplete="name" required></div>' +
       '<div class="f"><label for="co-email">Email</label><input id="co-email" name="Email" type="email" autocomplete="email" required></div>' +
-      '<div class="f"><label for="co-del">Shipping</label><select id="co-del" name="Ship">' + shipOpts() + '</select><p class="hint" data-eta></p></div>' +
-      '<div class="f"><label for="co-addr">Shipping address <span class="mute" data-ctry>(include country if international)</span></label><textarea id="co-addr" name="Address" rows="4" autocomplete="street-address" required></textarea></div>' +
+      (!intl && SH.pickup ? '<div class="f"><label for="co-del">Delivery</label><select id="co-del" name="Delivery"><option value="ship">Ship it to me</option><option value="pickup">Local pickup (' + esc(SH.pickup.area) + ')</option></select><p class="hint" data-pickhint hidden>' + esc(SH.pickup.note) + '</p></div>' : "") +
+      (intl ? '<div class="f"><label for="co-country">Country</label><select id="co-country" name="Country" autocomplete="country-name"><option value="">Choose your country</option>' + countries.map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("") + '</select></div>' : "") +
+      '<div class="f" data-shipaddr><label for="co-addr">Shipping address' + (intl ? " (full address, local format)" : "") + '</label><textarea id="co-addr" name="Address" rows="4" autocomplete="street-address" required></textarea></div>' +
+      '<div class="f" data-pickaddr hidden><label for="co-town">Your town</label><input id="co-town" name="Town" type="text"></div>' +
       '<div class="f"><label for="co-notes">Notes (optional)</label><textarea id="co-notes" name="Notes"></textarea></div>' +
       '<p class="err" data-err hidden></p>' +
-      '<button class="btn" type="submit">Continue to Payment</button>' +
-      '<p class="hint">' + esc(SH.note || "") + '</p><p class="hint" data-intl hidden>' + esc(SH.intlNote || "") + '</p>' +
-      '<p class="hint"><a href="' + dmLink() + '" target="_blank" rel="noopener">Questions? Message us on Instagram</a></p></form>' +
+      '<div class="notice" data-dm hidden style="margin:0 0 14px"><p style="margin:0 0 10px">For 4 or more pieces, message us for shipping.</p><a class="btn sm" href="' + dmLink() + '" target="_blank" rel="noopener">Message Us On Instagram</a></div>' +
+      '<button class="btn" type="submit" data-go>Continue To Payment</button>' +
+      '<p class="hint">' + (intl ? "Ships by " + esc(SH.intl.service) + ". Delivery time varies by destination and is not guaranteed. Tracking is available to select countries only. The destination country may charge import duties, taxes and fees. If they are not prepaid, the buyer usually pays them. Other restrictions may apply by country." : "Ships by " + esc(SH.us.service) + ".") + '</p>' +
+      '<p class="hint"><strong>All sales are final. No returns.</strong> Questions? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us on Instagram</a>.</p>' +
+      (intl ? "" : '<p class="hint">Shipping outside the United States? <a href="international.html">Use the international order page</a>.</p>') + '</form>' +
       '<div><h2 class="disp h3" style="margin-bottom:16px">Order Summary</h2>' +
       bag.map(function (id) { var p = byId(id); return '<div class="line" style="grid-template-columns:1fr auto"><div>' + esc(p.name) + '<div class="mono mute">' + esc(p.id) + "</div></div><div>" + money(p.price) + "</div></div>"; }).join("") +
       '<div class="line" style="grid-template-columns:1fr auto"><div>Subtotal</div><div>' + money(sub) + '</div></div>' +
       '<div class="line" style="grid-template-columns:1fr auto"><div>Shipping <span class="mono mute" data-shipname></span></div><div data-shipamt></div></div>' +
-      '<div class="total" style="margin-top:14px"><span>Total</span><strong data-total></strong></div></div></div>';
-    var form = $("[data-co]", body), del = $("#co-del", body);
+      '<div class="total" style="margin-top:14px"><span>Total</span><strong data-total></strong></div>' +
+      (intl ? '<p class="hint" style="margin-top:14px"><a href="shop.html">Back to the shop</a></p>' : "") + '</div></div>';
+    var form = $("[data-co]", body), sel = intl ? $("#co-country", body) : null;
+    var delSel = $("#co-del", body);
+    function pick() { return !!delSel && delSel.value === "pickup"; }
+    function cur() { return pick() ? 0 : shipFor(region, n, intl ? sel.value : ""); }
     function sync() {
-      var k = del.value, sc = shipCost(k, n);
-      $("[data-shipamt]", body).textContent = money(sc); $("[data-shipname]", body).textContent = SH[k].label;
-      $("[data-total]", body).textContent = money(sub + sc); $("[data-eta]", body).textContent = SH[k].eta || "";
-      $("[data-intl]", body).hidden = k !== "intl";
+      var sc = cur(), tooMany = !pick() && n > (SH.maxPieces || 3), go = $("[data-go]", body);
+      var pk = pick(); $("[data-shipaddr]", body).hidden = pk; $("[data-pickaddr]", body).hidden = !pk; var ph = $("[data-pickhint]", body); if (ph) ph.hidden = !pk;
+      $("[data-dm]", body).hidden = !tooMany;
+      $("[data-shipname]", body).textContent = pk ? "Local pickup" : (intl ? (sel.value || "") : "United States");
+      $("[data-shipamt]", body).textContent = tooMany ? "Message us" : (pk ? "Free" : (sc == null ? "Choose country" : money(sc)));
+      $("[data-total]", body).textContent = sc == null ? "-" : money(sub + sc);
+      go.disabled = sc == null;
     }
-    del.addEventListener("change", sync); sync();
+    if (sel) sel.addEventListener("change", sync); if (delSel) delSel.addEventListener("change", sync); sync();
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var fd = new FormData(form), err = $("[data-err]", body), k = fd.get("Ship");
+      var fd = new FormData(form), err = $("[data-err]", body), sc = cur();
       var email = String(fd.get("Email")).trim();
+      if (sc == null) { err.hidden = false; err.textContent = intl ? "Choose your country so we can price shipping." : "Message us for shipping on 4 or more pieces."; return; }
       if (!fd.get("Name").trim()) { err.hidden = false; err.textContent = "Add your name."; return; }
       if (!/^\S+@\S+\.\S+$/.test(email)) { err.hidden = false; err.textContent = "Add a valid email so we can send your confirmation and tracking."; return; }
-      if (!String(fd.get("Address")).trim()) { err.hidden = false; err.textContent = "Add your shipping address."; return; }
-      var sc = shipCost(k, n), total = sub + sc, orderId = newOrderId();
-      var fields = { Order: orderId, Name: fd.get("Name"), Email: email, Shipping: SH[k].label + " " + money(sc), Address: fd.get("Address"), Notes: fd.get("Notes"),
+      var pk = pick(), town = String(fd.get("Town") || "").trim();
+      if (pk && !town) { err.hidden = false; err.textContent = "Add your town so we can confirm pickup is local."; return; }
+      if (!pk && !String(fd.get("Address")).trim()) { err.hidden = false; err.textContent = "Add your shipping address."; return; }
+      var total = sub + sc, orderId = newOrderId(), country = intl ? sel.value : "United States";
+      var fields = { Order: orderId, Name: fd.get("Name"), Email: email, Country: country, Codes: bag.join(", "), ShippingPaid: pk ? "$0 (local pickup)" : money(sc), Address: pk ? "LOCAL PICKUP - town: " + town : fd.get("Address"), Notes: fd.get("Notes"),
         Pieces: bag.map(function (id) { var p = byId(id); return p.id + " " + p.name + " (" + money(p.price) + ")"; }).join("; "), Subtotal: money(sub), Total: money(total), Payment: "Awaiting Venmo to @" + C.venmo };
-      var btn = $("button[type=submit]", form); btn.disabled = true; btn.textContent = "Sending...";
-      deliver("New order " + orderId + " " + money(total), fields).then(function (res) { fields._sub = sub; fields._ship = sc; showPay(orderId, total, fields, res, bag.slice()); });
+      var btn = $("[data-go]", form); btn.disabled = true; btn.textContent = "Sending...";
+      sendOrder(fields, "New order " + orderId + " " + money(total)).then(function (res) { fields._sub = sub; fields._ship = sc; showPay(body, orderId, total, fields, res, bag.slice()); });
     });
-    checkDlg.showModal();
   }
-  function showPay(orderId, total, fields, res, ids) {
-    var body = $("[data-body]", checkDlg);
+  function showPay(body, orderId, total, fields, res, ids) {
     var note = "Order " + orderId + ", shirt " + ids.join(", ");
     var links = venmoLinks(total, note);
     body.innerHTML =
@@ -163,7 +195,7 @@
     if (IS_MOBILE) $("[data-venmo]", body).addEventListener("click", function () { setTimeout(function () { if (!document.hidden) window.open(links.web, "_blank"); }, 1400); });
     $("[data-paid]", body).addEventListener("click", function () {
       setBag([]);
-      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>We email you to confirm your order.</li><li>We pack it and ship it by USPS. Your tracking number comes by email.</li></ol></div><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
+      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>We email you to confirm your order.</li><li>We pack it and ship it by USPS and email your tracking number. Local pickup: we email you to set a time and share the pickup address.</li></ol></div>' + ((C.orderForm && C.orderForm.fixUrl) ? '<p>Need to fix your address? <a href="' + esc(C.orderForm.fixUrl) + '" target="_blank" rel="noopener">Send your shipping details again</a>.</p>' : "") + '<p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>. All sales are final.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
     });
   }
 
@@ -194,7 +226,7 @@
     var OF = C.offers || {}, canOffer = OF.enabled !== false && p.offers !== false && isBuyable(p);
     if (isBuyable(p)) action = (inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>") +
       (canOffer ? ' <button class="btn ghost" data-offer>Make An Offer</button><p class="hint">' + esc(OF.note || "") + "</p>" : "") +
-      (isBuyable(p) && SH.us ? '<p class="hint">Shipping at checkout: ' + money(shipCost("us", 1)) + " in the US, " + money(shipCost("intl", 1)) + " international.</p>" : "");
+      (isBuyable(p) && SH.us ? '<p class="hint">US shipping: ' + money(SH.us.one) + " for one piece, " + money(SH.us.few) + " for 2 to 3. International shipping is priced by country at checkout. All sales are final.</p>" : "");
     else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us</a>.</p>';
     else action = '<button class="btn" disabled>' + (p.status === "sold" ? "Sold" : "On hold") + "</button>";
     body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '">' : "") + '</div>' +
@@ -435,5 +467,5 @@
     $$("[data-sip-date]").forEach(function (n) { var s = C.sipThrift || {}; n.textContent = s.date ? s.date + (s.time ? ", " + s.time : "") : "Date announced soon"; });
   }
 
-  mountChrome(); mountNav(); mountPieces(); mountServices(); mountForms(); mountBooking();
+  mountChrome(); mountNav(); $$('[data-mount="intl"]').forEach(function (r) { renderCheckout(r, "intl"); }); mountPieces(); mountServices(); mountForms(); mountBooking();
 })();

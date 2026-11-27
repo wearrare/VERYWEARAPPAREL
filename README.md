@@ -92,3 +92,17 @@ Send updates from that same tool, not from a personal inbox. It handles unsubscr
 Needs Python 3 with Pillow (`pip install pillow`; add `pillow-heif` for iPhone HEIC photos). Or send the CSV and the photos to whoever manages the site and they run it.
 
 Measurements shown on each piece: pit to pit (laid flat, armpit seam to armpit seam), length (back of collar to hem), shoulder (seam to seam), sleeve (shoulder seam to cuff). Inches.
+
+## 12. Orders, shipping and the Google Form inbox
+
+**Shipping prices** live in `config.js` under `shipping`.
+- US: `one` (1 piece) and `few` (2 or 3 pieces). 4 or more pieces shows "message us for shipping".
+- International: each country is mapped to a USPS price group, and each group has a price for up to 1 lb (1 piece) and up to 3 lb (2 or 3 pieces). These are the USPS First-Class Package International Service retail prices from USPS Notice 123. 4 or more pieces shows "message us".
+- Local pickup (free) is `shipping.pickup`. Delete that block to turn it off.
+- When USPS changes its prices, update `groups` (and `us.one` / `us.few`). Delete a line from `countries` to stop shipping to a country.
+
+**Order inbox.** `config.js` `orderForm` sends every order to a Google Form, and the Form fills a Google Sheet.
+1. Make a Google Form with these short-answer fields, in this order: Order, Name, Email, Country, Shirt codes, Pieces, Shipping paid, Total, Address (paragraph), Notes (paragraph).
+2. In the Form: Responses > Link to Sheets (this makes the orders spreadsheet). In Responses, turn on "Get email notifications for new responses".
+3. Form menu (three dots) > Get pre-filled link. Fill every field with its own name (type "order" in Order, "name" in Name, and so on), click Get link, and copy it. The link holds each field's `entry.NNNN` number.
+4. Put the form's `.../formResponse` address in `action`, the entry numbers in `fields`, and the normal public form link in `fixUrl`.

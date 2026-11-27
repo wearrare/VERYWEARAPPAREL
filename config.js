@@ -69,6 +69,16 @@ window.WR = {
     after: "We reply within 24 hours. If we accept, we hold the piece for you for 24 hours so you can pay."
   },
 
+  // ---- order inbox (Google Form -> Google Sheet) -------------
+  // Every order is saved to a Google Sheet through a Google Form. See README section 12.
+  // action: the form's  .../formResponse  address.  fields: the form's entry.NNNN ids.
+  // fixUrl: the form's normal public link, shown after payment as "send or fix your shipping details".
+  orderForm: {
+    action: "",
+    fixUrl: "",
+    fields: { order: "", name: "", email: "", country: "", codes: "", pieces: "", shipping: "", total: "", address: "", notes: "" }
+  },
+
   // ---- where requests go ----------------------------------
   // Option A (recommended): a free form service that emails you every request.
   //   Web3Forms  -> formEndpoint: "https://api.web3forms.com/submit", formAccessKey: "YOUR_KEY"
@@ -116,12 +126,22 @@ window.WR = {
   },
 
   // ---- checkout notes --------------------------------------
-  // Shipping is paid at checkout, before the Venmo step. One flat price per order for each choice.
-  // perExtra adds that amount for every additional piece in the same order (leave 0 for a single flat price).
+  // ---- shipping (paid at checkout, before the Venmo step) ----
+  // US: one price for 1 piece, one price for 2 or 3 pieces. 4 or more pieces: "message us for shipping".
+  // International: priced by country straight from the USPS price list (First-Class Package International
+  // Service, retail). 1 piece uses the up-to-1-lb price, 2 or 3 pieces use the up-to-3-lb price. 4 or more: message us.
+  // Source: USPS Notice 123 (price list), Ground Advantage retail effective Oct 4, 2026.
   shipping: {
-    us:   { label: "United States", price: 10, perExtra: 0, eta: "Usually 2 to 5 business days after we send it" },
-    intl: { label: "International", price: 35, perExtra: 0, eta: "Usually 1 to 4 weeks. Not guaranteed" },
-    note: "Shipping is paid with your order. We ship by USPS with tracking after your payment arrives.",
-    intlNote: "International orders: import duties, taxes and fees set by your country are not included. They are paid by the buyer to the carrier on delivery."
-  }
+    us: { one: 14, few: 20, service: "USPS Ground Advantage" },
+    intl: {
+      service: "USPS First-Class Package International Service",
+      // price group -> [up to 1 lb, up to 3 lb]
+      groups: {"1": [26.0, 38.5], "2": [26.6, 39.0], "3": [37.35, 61.7], "4": [38.35, 59.75], "5": [38.3, 57.3], "6": [34.25, 56.95], "7": [29.95, 48.9], "8": [31.15, 50.1], "9": [35.9, 58.3], "10": [31.15, 50.15], "11": [40.45, 63.15], "12": [41.25, 65.25], "13": [37.4, 56.4], "14": [32.05, 48.8], "15": [29.4, 47.75], "16": [29.95, 48.6], "17": [33.95, 56.45], "18": [32.05, 51.65], "19": [31.8, 50.7], "20": [31.95, 49.25]},
+      // country -> price group (USPS "Country Price Groups"). Delete a line to stop shipping to a country.
+      countries: {"Afghanistan": 4,"Albania": 3,"Algeria": 5,"Andorra": 3,"Angola": 5,"Anguilla": 6,"Antigua and Barbuda": 6,"Argentina": 11,"Armenia": 3,"Aruba": 6,"Ascension": 5,"Australia": 12,"Austria": 9,"Azerbaijan": 3,"Bahamas": 6,"Bahrain": 4,"Bangladesh": 4,"Barbados": 6,"Belarus": 3,"Belgium": 9,"Belize": 6,"Benin": 5,"Bermuda": 6,"Bhutan": 4,"Bolivia": 6,"Bonaire, Sint Eustatius, and Saba": 6,"Bosnia-Herzegovina": 3,"Botswana": 5,"Brazil": 13,"British Virgin Islands": 6,"Brunei Darussalam": 4,"Bulgaria": 3,"Burkina Faso": 5,"Burma": 4,"Burundi": 5,"Cambodia": 4,"Cameroon": 5,"Canada": 1,"Cape Verde": 5,"Cayman Islands": 6,"Central African Republic": 5,"Chad": 5,"Chile": 11,"China": 14,"Colombia": 6,"Comoros": 5,"Congo, Democratic Republic of the": 5,"Congo, Republic of the": 5,"Costa Rica": 6,"Cote d'Ivoire": 5,"Croatia": 8,"Cuba": 6,"Curacao": 6,"Cyprus": 4,"Czech Republic": 7,"Denmark": 9,"Djibouti": 5,"Dominica": 6,"Dominican Republic": 6,"Ecuador": 6,"Egypt": 5,"El Salvador": 6,"Equatorial Guinea": 5,"Eritrea": 5,"Estonia": 9,"Eswatini": 5,"Ethiopia": 5,"Falkland Islands": 6,"Faroe Islands": 9,"Fiji": 4,"Finland": 9,"France": 15,"French Guiana": 15,"French Polynesia": 4,"Gabon": 5,"Gambia": 5,"Georgia, Republic of": 3,"Germany": 16,"Ghana": 5,"Gibraltar": 7,"Greece": 8,"Greenland": 9,"Grenada": 6,"Guadeloupe": 15,"Guatemala": 6,"Guinea": 5,"Guinea-Bissau": 5,"Guyana": 6,"Haiti": 6,"Honduras": 6,"Hong Kong": 18,"Hungary": 7,"Iceland": 7,"India": 10,"Indonesia": 4,"Iran": 4,"Iraq": 4,"Ireland": 9,"Israel": 8,"Italy": 9,"Jamaica": 6,"Japan": 17,"Jordan": 4,"Kazakhstan": 4,"Kenya": 5,"Kiribati": 4,"Kosovo": 3,"Kuwait": 4,"Kyrgyzstan": 4,"Laos": 4,"Latvia": 3,"Lebanon": 4,"Lesotho": 5,"Liberia": 5,"Libya": 5,"Liechtenstein": 7,"Lithuania": 7,"Luxembourg": 8,"Macao": 4,"Madagascar": 5,"Malawi": 5,"Malaysia": 10,"Maldives": 4,"Mali": 5,"Malta": 3,"Martinique": 15,"Mauritania": 5,"Mauritius": 5,"Mexico": 2,"Moldova": 3,"Mongolia": 4,"Montenegro": 3,"Montserrat": 6,"Morocco": 5,"Mozambique": 5,"Namibia": 5,"Nauru": 4,"Nepal": 4,"Netherlands": 9,"New Caledonia": 4,"New Zealand": 12,"Nicaragua": 6,"Niger": 5,"Nigeria": 5,"North Korea": 4,"North Macedonia": 3,"Norway": 9,"Oman": 4,"Pakistan": 4,"Panama": 6,"Papua New Guinea": 4,"Paraguay": 6,"Peru": 6,"Philippines": 4,"Pitcairn Island": 4,"Poland": 7,"Portugal": 7,"Qatar": 4,"Reunion": 15,"Romania": 3,"Russia": 19,"Rwanda": 5,"Saint Helena": 5,"Saint Kitts and Nevis": 6,"Saint Lucia": 6,"Saint Pierre and Miquelon": 15,"Saint Vincent and the Grenadines": 6,"Samoa": 4,"San Marino": 8,"Sao Tome and Principe": 5,"Saudi Arabia": 4,"Senegal": 5,"Serbia": 3,"Seychelles": 5,"Sierra Leone": 5,"Singapore": 10,"Sint Maarten": 6,"Slovakia": 3,"Slovenia": 8,"Solomon Islands": 4,"South Africa": 5,"South Korea": 18,"South Sudan": 5,"Spain": 8,"Sri Lanka": 4,"Sudan": 5,"Suriname": 6,"Sweden": 8,"Switzerland": 9,"Syria": 4,"Taiwan": 10,"Tajikistan": 4,"Tanzania": 5,"Thailand": 10,"Timor-Leste": 4,"Togo": 5,"Tonga": 4,"Trinidad and Tobago": 6,"Tristan da Cunha": 5,"Tunisia": 5,"Turkiye": 3,"Turkmenistan": 4,"Turks and Caicos Islands": 6,"Tuvalu": 4,"Uganda": 5,"Ukraine": 3,"United Arab Emirates": 10,"United Kingdom": 20,"Uruguay": 6,"Uzbekistan": 4,"Vanuatu": 4,"Vatican City": 9,"Venezuela": 11,"Vietnam": 4,"Wallis and Futuna Islands": 4,"Yemen": 4,"Zambia": 5,"Zimbabwe": 5}
+    },
+    maxPieces: 3,
+    // Free local pickup, United States checkout only.
+    pickup: { area: "Columbia, SC and nearby towns", note: "Local pickup is free for Columbia, SC and nearby towns. After you pay, we email you to set a time and share the pickup address." }
+  },
 };
