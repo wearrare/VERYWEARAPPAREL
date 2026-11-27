@@ -51,9 +51,9 @@ window.WR = {
   // Google Form: action = the form's .../formResponse address, emailField = "entry.123456789" (find it in the form's pre-filled link)
   // MailerLite / Mailchimp / Brevo: action = the embedded form's action="..." address, emailField = its email input name
   signup: {
-    action: "",
-    emailField: "email",
-    nameField: "",             // optional, same idea
+    action: "https://docs.google.com/forms/d/e/1FAIpQLSfJONw23hjR0NnW20LlXwzbIFDPLAkBZQoMdyErp32dzQBzMg/formResponse",
+    emailField: "entry.1323435284",
+    nameField: "entry.728841704",             // optional, same idea
     extra: {},                 // any hidden fields the tool needs, e.g. { u: "...", id: "..." }
     thanks: "You're on the list. Watch your inbox."
   },
