@@ -244,3 +244,16 @@ h1, h2, h3, .disp, .h1, .h2, .h3 { text-transform: capitalize; }
 .su-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; font-size: 26px; line-height: 1; cursor: pointer; color: var(--ink); padding: 4px 8px; }
 @media (max-width: 600px) { .su-pop { right: 12px; left: 12px; width: auto; bottom: 12px; } body:has(.wr-music) .su-pop { bottom: 70px; } }
 @media (prefers-reduced-motion: reduce) { .su-pop { transition: none; } }
+
+/* FAQ */
+.faq-sec { margin: 0 0 42px; }
+.faq-sec > h2 { margin-bottom: 14px; }
+details { border-top: 1px solid var(--ink); }
+.faq-sec details:last-child { border-bottom: 1px solid var(--ink); }
+summary { cursor: pointer; padding: 16px 40px 16px 0; font-size: 19px; list-style: none; position: relative; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; position: absolute; right: 6px; top: 12px; font: 24px "Mono", monospace; }
+details[open] summary::after { content: "\2212"; }
+summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.ans { padding: 0 0 18px; max-width: 64ch; }
+.ans p { margin: 0 0 10px; }

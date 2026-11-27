@@ -467,5 +467,6 @@
     $$("[data-sip-date]").forEach(function (n) { var s = C.sipThrift || {}; n.textContent = s.date ? s.date + (s.time ? ", " + s.time : "") : "Date announced soon"; });
   }
 
+  $$("[data-cfg]").forEach(function (n) { var v = n.getAttribute("data-cfg").split(".").reduce(function (o, k) { return o && o[k]; }, SH); if (v != null) n.textContent = money(v); });
   mountChrome(); mountNav(); $$('[data-mount="intl"]').forEach(function (r) { renderCheckout(r, "intl"); }); mountPieces(); mountServices(); mountForms(); mountBooking();
 })();
