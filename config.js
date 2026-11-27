@@ -74,9 +74,9 @@ window.WR = {
   // action: the form's  .../formResponse  address.  fields: the form's entry.NNNN ids.
   // fixUrl: the form's normal public link, shown after payment as "send or fix your shipping details".
   orderForm: {
-    action: "",
-    fixUrl: "",
-    fields: { order: "", name: "", email: "", country: "", codes: "", pieces: "", shipping: "", total: "", address: "", notes: "" }
+    action: "https://docs.google.com/forms/d/e/1FAIpQLSfSXDgJrfUySA5CiNumeC4NlApNv_jxjRq1PbY3AAVFFv6Fcw/formResponse",
+    fixUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfSXDgJrfUySA5CiNumeC4NlApNv_jxjRq1PbY3AAVFFv6Fcw/viewform",
+    fields: { order: "entry.1841083538", name: "entry.1142217048", email: "entry.1484649175", country: "entry.999358937", codes: "entry.2082389465", pieces: "entry.759118004", shipping: "entry.2027978990", total: "entry.1992119546", address: "entry.1928886644", notes: "entry.1730921516" }
   },
 
   // ---- where requests go ----------------------------------
