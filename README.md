@@ -57,7 +57,7 @@ A free Google account gets one booking page, so use one schedule with a "service
 Until you paste links, the built-in versions of both work, and requests go to his Instagram DM (or to email if you add one in `config.js`).
 
 ## 6. Orders
-When someone pays, Venmo notifies him with the amount and the note, which lists the order number and the piece numbers, for example `VWA VWA-4K2QX: VWA-001, VWA-004`. He messages the buyer to arrange pickup or shipping, and marks those pieces `sold` in `products.js`.
+When someone pays, Venmo notifies him with the amount and the note, which lists the order number and the piece numbers, for example `Order VWA-4K2QX, shirt VWA-001, VWA-004`. He messages the buyer to arrange pickup or shipping, and marks those pieces `sold` in `products.js`.
 
 ## 7. Sip & Thrift
 
