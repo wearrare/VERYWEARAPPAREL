@@ -134,11 +134,11 @@
   }
   function showPay(orderId, total, fields, res, ids) {
     var body = $("[data-body]", checkDlg);
-    var note = "VWA " + orderId + ": " + ids.join(", ");
+    var note = "Order " + orderId + ", shirt " + ids.join(", ");
     var links = venmoLinks(total, note);
     body.innerHTML =
       '<h2 class="disp h2">Pay with Venmo</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong>.</p>" +
-      '<div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:22px">@' + esc(C.venmo) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. In the note, write <strong>" + esc(note) + "</strong>.</p></div>" +
+      '<div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:22px">@' + esc(C.venmo) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. Keep the shirt " + (ids.length > 1 ? "codes" : "code") + " in the Venmo note so we can match your payment: <strong>" + esc(note) + "</strong></p></div>" +
       '<div class="row"><a class="btn" data-venmo href="' + esc(IS_MOBILE ? links.app : links.web) + '"' + (IS_MOBILE ? "" : ' target="_blank" rel="noopener"') + '>Open Venmo</a><button class="btn ghost" data-cp>Copy note</button></div>' +
       (IS_MOBILE ? '<p class="hint">Venmo not opening? <a href="' + esc(links.web) + '" target="_blank" rel="noopener">Use the Venmo website</a>.</p>' : "") +
       (res.sent ? '<p class="hint" style="margin-top:18px">Your order details were sent. After you pay, we confirm by message and hold your pieces.</p>' : fallbackHtml(res.text)) +
@@ -148,7 +148,7 @@
     if (IS_MOBILE) $("[data-venmo]", body).addEventListener("click", function () { setTimeout(function () { if (!document.hidden) window.open(links.web, "_blank"); }, 1400); });
     $("[data-paid]", body).addEventListener("click", function () {
       setBag([]);
-      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in. We will confirm your payment and message you about pickup or shipping.</p><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
+      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>You get a message from us confirming it, usually within ' + esc(String((C.offers && C.offers.replyHours) || 24)) + ' hours.</li><li>We set up pickup at the showroom, or pack and ship it and send you tracking.</li></ol></div><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
     });
   }
 
@@ -176,7 +176,9 @@
     var spec = [["Label", p.label], ["Era", p.era], ["Size", p.size], ["Condition", p.condition], ["Category", p.category],
       ["Pit to pit", p.pit && p.pit + " in"], ["Length", p.length && p.length + " in"], ["Shoulder", p.shoulder && p.shoulder + " in"], ["Sleeve", p.sleeve && p.sleeve + " in"]].filter(function (r) { return r[1]; });
     var action;
-    if (isBuyable(p)) action = inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>";
+    var OF = C.offers || {}, canOffer = OF.enabled !== false && p.offers !== false && isBuyable(p);
+    if (isBuyable(p)) action = (inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>") +
+      (canOffer ? ' <button class="btn ghost" data-offer>Make An Offer</button><p class="hint">' + esc(OF.note || "") + "</p>" : "");
     else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us</a>.</p>';
     else action = '<button class="btn" disabled>' + (p.status === "sold" ? "Sold" : "On hold") + "</button>";
     body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '">' : "") + '</div>' +
@@ -186,8 +188,34 @@
       (p.story ? "<p>" + esc(p.story) + "</p>" : "") + '<div style="margin-top:20px">' + action + "</div></div></div>";
     $$("[data-th]", body).forEach(function (b) { b.addEventListener("click", function () { $("[data-big]", body).src = imgPath(imgs[+b.getAttribute("data-th")]); }); });
     var add = $("[data-add]", body); if (add) add.addEventListener("click", function () { setBag(bag.concat([p.id])); pieceDlg.close(); openBag(); });
+    var ob = $("[data-offer]", body); if (ob) ob.addEventListener("click", function () { openOffer(p); });
     var vb = $("[data-viewbag]", body); if (vb) vb.addEventListener("click", function () { pieceDlg.close(); openBag(); });
     pieceDlg.showModal();
+  }
+
+  function openOffer(p) {
+    var OF = C.offers || {}, body = $("[data-body]", pieceDlg);
+    body.innerHTML = '<div style="max-width:520px"><h2 class="disp h2">Make An Offer</h2><p class="lede">' + esc(p.name) + ' <span class="mono mute">' + esc(p.id) + ' / listed ' + money(p.price) + '</span></p>' +
+      '<form data-of novalidate><div class="f"><label for="of-amt">Your offer ($)</label><input id="of-amt" type="text" name="Offer" inputmode="decimal" required></div>' +
+      '<div class="f"><label for="of-name">Your name</label><input id="of-name" type="text" name="Name" required></div>' +
+      '<div class="f"><label for="of-c">Instagram or phone</label><input id="of-c" type="text" name="Contact" required></div>' +
+      '<div class="f"><label for="of-n">Note (optional)</label><textarea id="of-n" name="Notes"></textarea></div>' +
+      '<p class="err" data-err hidden></p><button class="btn" type="submit">Send Offer</button> <button class="btn ghost" type="button" data-back>Back</button>' +
+      '<p class="hint">' + esc(OF.terms || "") + '</p></form></div>';
+    $("[data-back]", body).addEventListener("click", function () { openPiece(p.id); });
+    var form = $("[data-of]", body);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var fd = new FormData(form), err = $("[data-err]", body), amt = parseFloat(String(fd.get("Offer")).replace(/[^0-9.]/g, ""));
+      if (!amt || !fd.get("Name").trim() || !fd.get("Contact").trim()) { err.hidden = false; err.textContent = "Add your offer, your name, and a way to reach you."; return; }
+      var fields = { Piece: p.id + " " + p.name, Listed: money(p.price), Offer: money(amt), Name: fd.get("Name"), Contact: fd.get("Contact"), Notes: fd.get("Notes") };
+      var btn = $("button[type=submit]", form); btn.disabled = true; btn.textContent = "Sending...";
+      deliver("Offer on " + p.id + ": " + money(amt), fields).then(function (res) {
+        body.innerHTML = '<div class="ok" style="max-width:520px"><h2 class="disp h2">Offer Sent</h2><p class="lede">Your offer of ' + money(amt) + ' on ' + esc(p.name) + ' is in. ' + esc(OF.after || "We will reply by message.") + '</p>' +
+          (res.sent ? "" : fallbackHtml(res.text)) + '<p><a class="btn" href="shop.html">Keep Browsing</a></p></div>';
+        if (!res.sent) wireFallback(body, res.text);
+      });
+    });
   }
 
   function mountPieces() {

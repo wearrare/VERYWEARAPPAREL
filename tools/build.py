@@ -130,7 +130,7 @@ page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <div class="notice" style="margin-top:34px"><span class="mono">How it works</span>
-<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed and pickup at the showroom or shipping is arranged. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
+<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed and pickup at the showroom or shipping is arranged. Want to make an offer? Tap a piece and choose Make An Offer. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
 </div></section>"""
 page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
 
@@ -141,7 +141,7 @@ archive = head("Value beyond money", "The Archive",
 <div class="grid g2" style="margin-bottom:40px">
 <div><h2 class="disp h2" style="margin-bottom:14px">Clothing as collection</h2>
 <p>Price tells you what something costs. It doesn't tell you what it is. In the Archive, pieces are kept for their craft, their era, their cut, and the culture they carry, and shown the way a gallery shows a work.</p>
-<p>Some archive pieces eventually find a new keeper. Most stay. Ask about any plate.</p></div>
+<p>Some archive pieces eventually find a new keeper. Most stay. Ask about any plate, which is just our word for one archive piece.</p></div>
 <div><span class="mono mute">What We Look At</span>
 <ul class="list" style="margin-top:12px">
 <li><span>Label &amp; construction</span><span class="mono mute">01</span></li>
@@ -149,6 +149,7 @@ archive = head("Value beyond money", "The Archive",
 <li><span>Condition &amp; wear</span><span class="mono mute">03</span></li>
 <li><span>Cultural weight</span><span class="mono mute">04</span></li></ul></div></div>
 <div class="sec-head"><h2 class="disp h3">The plates</h2><span class="mono mute">Not for sale unless noted</span></div>
+<p class="hint" style="margin:-6px 0 22px;max-width:60ch">A plate is one archive piece on its own card, like a page in an art book: a photo, its name and era. Tap a card to see more.</p>
 <div data-mount="archive"></div>
 </div></section>"""
 page("archive.html", "The Archive | Very Wear Apparel", "Vintage clothing and accessories as an art collection with value far beyond money.", archive)

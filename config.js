@@ -58,6 +58,17 @@ window.WR = {
     thanks: "You're on the list. Watch your inbox."
   },
 
+  // ---- offers ----------------------------------------------
+  // Shows a "Make An Offer" button on every piece. Turn off for all: enabled:false.
+  // Turn off for one piece: add  offers: false  to that piece in products.js (or leave it firm).
+  offers: {
+    enabled: true,
+    replyHours: 24,
+    note: "Offers are welcome. We reply within 24 hours.",
+    terms: "A reasonable offer is any amount you would be happy to pay. If we accept, we message you and hold the piece for 24 hours while you pay on Venmo. Accepted offers are final. One of one pieces can sell to someone else before we reply.",
+    after: "We reply within 24 hours. If we accept, we hold the piece for you for 24 hours so you can pay."
+  },
+
   // ---- where requests go ----------------------------------
   // Option A (recommended): a free form service that emails you every request.
   //   Web3Forms  -> formEndpoint: "https://api.web3forms.com/submit", formAccessKey: "YOUR_KEY"
