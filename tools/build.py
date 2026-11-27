@@ -130,8 +130,12 @@ page("index.html", "Very Wear Apparel | Vintage as art. Worn as rare.",
 shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <div class="notice" style="margin-top:34px"><span class="mono">How it works</span>
-<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Your payment is confirmed and pickup at the showroom or shipping is arranged. Want to make an offer? Tap a piece and choose Make An Offer. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
-</div></section>"""
+<p style="margin:8px 0 0">1. Add pieces to your bag. 2. Check out and pay with Venmo. 3. Shipping is paid with your order and we ship after your payment arrives. Want to make an offer? Tap a piece and choose Make An Offer. Looking for something specific? <a href="stylist.html">Ask to have it sourced</a>.</p></div>
+<div class="grid g2" style="margin-top:22px">
+<div class="notice"><span class="mono">Shipping In The United States</span><p style="margin:8px 0 0">One flat price per order, paid at checkout. Ships by USPS with tracking, usually 2 to 5 business days after we send it.</p></div>
+<div class="notice"><span class="mono">International Shipping</span><p style="margin:8px 0 0">One flat price per order, paid at checkout. Ships by USPS with a customs form, and tracking is included for most countries. Delivery takes about 1 to 4 weeks and is not guaranteed. Import duties, taxes and fees set by your country are not included and are paid by the buyer on delivery. A few countries restrict used clothing, so message us first if you are unsure.</p></div></div>
+</div></section>
+"""
 page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
 
 # ---------------------------------------------------------------- ARCHIVE

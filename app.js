@@ -54,6 +54,8 @@
   /* ---------- bag ---------- */
   var bag = load(BAG_KEY, []).filter(function (id) { var p = byId(id); return p && isBuyable(p); });
   function bagTotal() { return bag.reduce(function (s, id) { return s + byId(id).price; }, 0); }
+  var SH = C.shipping || {};
+  function shipCost(key, n) { var o = SH[key] || { price: 0, perExtra: 0 }; return (+o.price || 0) + (+o.perExtra || 0) * Math.max(0, n - 1); }
   function setBag(b) { bag = b; save(BAG_KEY, bag); renderBag(); updateCount(); $$("[data-pid]").forEach(syncButtons); }
   function updateCount() { $$("[data-bag-count]").forEach(function (n) { n.textContent = bag.length; }); }
   function inBag(id) { return bag.indexOf(id) > -1; }
@@ -91,7 +93,7 @@
         "<div><div>" + esc(p.name) + '</div><div class="mono mute">' + esc([p.label, p.size && "Size " + p.size].filter(Boolean).join(" / ")) + '</div><button class="rm" data-rm="' + esc(id) + '">Remove</button></div>' +
         "<div>" + money(p.price) + "</div></div>";
     }).join("");
-    foot.innerHTML = '<div class="total"><span>Total</span><strong>' + money(bagTotal()) + '</strong></div><button class="btn" style="width:100%" data-checkout>Check out with Venmo</button><p class="hint">One of one pieces. Shipping or pickup is arranged after you pay.</p>';
+    foot.innerHTML = '<div class="total"><span>Subtotal</span><strong>' + money(bagTotal()) + '</strong></div><p class="hint" style="margin:-4px 0 12px">Shipping is added at checkout.</p><button class="btn" style="width:100%" data-checkout>Check Out</button><p class="hint">One of one pieces. Shipping is paid with your order.</p>';
     $$("[data-rm]", items).forEach(function (b) { b.addEventListener("click", function () { setBag(bag.filter(function (i) { return i !== b.getAttribute("data-rm"); })); }); });
     $("[data-checkout]", foot).addEventListener("click", function () { closeBag(); openCheckout(); });
   }
@@ -104,31 +106,44 @@
   }
   function openCheckout() {
     var body = $("[data-body]", checkDlg);
-    var total = bagTotal();
+    var sub = bagTotal(), n = bag.length;
+    function shipOpts() { return ["us", "intl"].filter(function (k) { return SH[k]; }).map(function (k) { return '<option value="' + k + '">' + esc(SH[k].label + " - " + money(shipCost(k, n))) + "</option>"; }).join(""); }
     body.innerHTML =
-      '<div class="piece"><form data-co novalidate><h2 class="disp h3" style="margin-bottom:16px">Your details</h2>' +
+      '<div class="piece"><form data-co novalidate><h2 class="disp h3" style="margin-bottom:16px">Your Details</h2>' +
       '<div class="f"><label for="co-name">Name</label><input id="co-name" name="Name" type="text" autocomplete="name" required></div>' +
-      '<div class="f"><label for="co-contact">Phone, email or Instagram</label><input id="co-contact" name="Contact" type="text" required></div>' +
-      '<div class="f"><label for="co-del">Pickup or shipping</label><select id="co-del" name="Delivery"><option>Pickup at the showroom (by appointment)</option><option>Ship to me</option></select></div>' +
-      '<div class="f" data-addr hidden><label for="co-addr">Shipping address</label><textarea id="co-addr" name="Address"></textarea></div>' +
+      '<div class="f"><label for="co-email">Email</label><input id="co-email" name="Email" type="email" autocomplete="email" required></div>' +
+      '<div class="f"><label for="co-del">Shipping</label><select id="co-del" name="Ship">' + shipOpts() + '</select><p class="hint" data-eta></p></div>' +
+      '<div class="f"><label for="co-addr">Shipping address <span class="mute" data-ctry>(include country if international)</span></label><textarea id="co-addr" name="Address" rows="4" autocomplete="street-address" required></textarea></div>' +
       '<div class="f"><label for="co-notes">Notes (optional)</label><textarea id="co-notes" name="Notes"></textarea></div>' +
       '<p class="err" data-err hidden></p>' +
-      '<button class="btn" type="submit">Continue to payment</button><p class="hint">' + esc(C.shipping || "") + "</p></form>" +
-      '<div><h2 class="disp h3" style="margin-bottom:16px">Order summary</h2>' +
+      '<button class="btn" type="submit">Continue to Payment</button>' +
+      '<p class="hint">' + esc(SH.note || "") + '</p><p class="hint" data-intl hidden>' + esc(SH.intlNote || "") + '</p>' +
+      '<p class="hint"><a href="' + dmLink() + '" target="_blank" rel="noopener">Questions? Message us on Instagram</a></p></form>' +
+      '<div><h2 class="disp h3" style="margin-bottom:16px">Order Summary</h2>' +
       bag.map(function (id) { var p = byId(id); return '<div class="line" style="grid-template-columns:1fr auto"><div>' + esc(p.name) + '<div class="mono mute">' + esc(p.id) + "</div></div><div>" + money(p.price) + "</div></div>"; }).join("") +
-      '<div class="total" style="margin-top:14px"><span>Total</span><strong>' + money(total) + "</strong></div></div></div>";
+      '<div class="line" style="grid-template-columns:1fr auto"><div>Subtotal</div><div>' + money(sub) + '</div></div>' +
+      '<div class="line" style="grid-template-columns:1fr auto"><div>Shipping <span class="mono mute" data-shipname></span></div><div data-shipamt></div></div>' +
+      '<div class="total" style="margin-top:14px"><span>Total</span><strong data-total></strong></div></div></div>';
     var form = $("[data-co]", body), del = $("#co-del", body);
-    del.addEventListener("change", function () { $("[data-addr]", body).hidden = del.selectedIndex !== 1; });
+    function sync() {
+      var k = del.value, sc = shipCost(k, n);
+      $("[data-shipamt]", body).textContent = money(sc); $("[data-shipname]", body).textContent = SH[k].label;
+      $("[data-total]", body).textContent = money(sub + sc); $("[data-eta]", body).textContent = SH[k].eta || "";
+      $("[data-intl]", body).hidden = k !== "intl";
+    }
+    del.addEventListener("change", sync); sync();
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var fd = new FormData(form), err = $("[data-err]", body);
-      if (!fd.get("Name").trim() || !fd.get("Contact").trim()) { err.hidden = false; err.textContent = "Add your name and a way to reach you."; return; }
-      if (del.selectedIndex === 1 && !String(fd.get("Address")).trim()) { err.hidden = false; err.textContent = "Add a shipping address."; return; }
-      var orderId = newOrderId();
-      var fields = { Order: orderId, Name: fd.get("Name"), Contact: fd.get("Contact"), Delivery: fd.get("Delivery"), Address: fd.get("Address"), Notes: fd.get("Notes"),
-        Pieces: bag.map(function (id) { var p = byId(id); return p.id + " " + p.name + " (" + money(p.price) + ")"; }).join("; "), Total: money(total), Payment: "Awaiting Venmo to @" + C.venmo };
+      var fd = new FormData(form), err = $("[data-err]", body), k = fd.get("Ship");
+      var email = String(fd.get("Email")).trim();
+      if (!fd.get("Name").trim()) { err.hidden = false; err.textContent = "Add your name."; return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { err.hidden = false; err.textContent = "Add a valid email so we can send your confirmation and tracking."; return; }
+      if (!String(fd.get("Address")).trim()) { err.hidden = false; err.textContent = "Add your shipping address."; return; }
+      var sc = shipCost(k, n), total = sub + sc, orderId = newOrderId();
+      var fields = { Order: orderId, Name: fd.get("Name"), Email: email, Shipping: SH[k].label + " " + money(sc), Address: fd.get("Address"), Notes: fd.get("Notes"),
+        Pieces: bag.map(function (id) { var p = byId(id); return p.id + " " + p.name + " (" + money(p.price) + ")"; }).join("; "), Subtotal: money(sub), Total: money(total), Payment: "Awaiting Venmo to @" + C.venmo };
       var btn = $("button[type=submit]", form); btn.disabled = true; btn.textContent = "Sending...";
-      deliver("New order " + orderId, fields).then(function (res) { showPay(orderId, total, fields, res, bag.slice()); });
+      deliver("New order " + orderId + " " + money(total), fields).then(function (res) { fields._sub = sub; fields._ship = sc; showPay(orderId, total, fields, res, bag.slice()); });
     });
     checkDlg.showModal();
   }
@@ -137,7 +152,7 @@
     var note = "Order " + orderId + ", shirt " + ids.join(", ");
     var links = venmoLinks(total, note);
     body.innerHTML =
-      '<h2 class="disp h2">Pay with Venmo</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong>.</p>" +
+      '<h2 class="disp h2">Pay with Venmo</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong> <span class=\"mono mute\">(" + money(fields._sub) + " pieces + " + money(fields._ship) + " shipping)</span>.</p>" +
       '<div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:22px">@' + esc(C.venmo) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. Keep the shirt " + (ids.length > 1 ? "codes" : "code") + " in the Venmo note so we can match your payment: <strong>" + esc(note) + "</strong></p></div>" +
       '<div class="row"><a class="btn" data-venmo href="' + esc(IS_MOBILE ? links.app : links.web) + '"' + (IS_MOBILE ? "" : ' target="_blank" rel="noopener"') + '>Open Venmo</a><button class="btn ghost" data-cp>Copy note</button></div>' +
       (IS_MOBILE ? '<p class="hint">Venmo not opening? <a href="' + esc(links.web) + '" target="_blank" rel="noopener">Use the Venmo website</a>.</p>' : "") +
@@ -148,7 +163,7 @@
     if (IS_MOBILE) $("[data-venmo]", body).addEventListener("click", function () { setTimeout(function () { if (!document.hidden) window.open(links.web, "_blank"); }, 1400); });
     $("[data-paid]", body).addEventListener("click", function () {
       setBag([]);
-      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>You get a message from us confirming it, usually within ' + esc(String((C.offers && C.offers.replyHours) || 24)) + ' hours.</li><li>We set up pickup at the showroom, or pack and ship it and send you tracking.</li></ol></div><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
+      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>We email you to confirm your order.</li><li>We pack it and ship it by USPS. Your tracking number comes by email.</li></ol></div><p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
     });
   }
 
@@ -178,7 +193,8 @@
     var action;
     var OF = C.offers || {}, canOffer = OF.enabled !== false && p.offers !== false && isBuyable(p);
     if (isBuyable(p)) action = (inBag(p.id) ? '<button class="btn" data-viewbag>In your bag - view bag</button>' : '<button class="btn" data-add>Add to bag - ' + money(p.price) + "</button>") +
-      (canOffer ? ' <button class="btn ghost" data-offer>Make An Offer</button><p class="hint">' + esc(OF.note || "") + "</p>" : "");
+      (canOffer ? ' <button class="btn ghost" data-offer>Make An Offer</button><p class="hint">' + esc(OF.note || "") + "</p>" : "") +
+      (isBuyable(p) && SH.us ? '<p class="hint">Shipping at checkout: ' + money(shipCost("us", 1)) + " in the US, " + money(shipCost("intl", 1)) + " international.</p>" : "");
     else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us</a>.</p>';
     else action = '<button class="btn" disabled>' + (p.status === "sold" ? "Sold" : "On hold") + "</button>";
     body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '">' : "") + '</div>' +

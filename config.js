@@ -65,7 +65,7 @@ window.WR = {
     enabled: true,
     replyHours: 24,
     note: "Offers are welcome. We reply within 24 hours.",
-    terms: "A reasonable offer is any amount you would be happy to pay. If we accept, we message you and hold the piece for 24 hours while you pay on Venmo. Accepted offers are final. One of one pieces can sell to someone else before we reply.",
+    terms: "A reasonable offer is any amount you would be happy to pay. If we accept, we message you and hold the piece for 24 hours while you pay on Venmo (shipping is added at checkout). Accepted offers are final. One of one pieces can sell to someone else before we reply.",
     after: "We reply within 24 hours. If we accept, we hold the piece for you for 24 hours so you can pay."
   },
 
@@ -116,5 +116,12 @@ window.WR = {
   },
 
   // ---- checkout notes --------------------------------------
-  shipping: "Pickup at the showroom by appointment, or shipping. Shipping is quoted after you pay and is confirmed by message."
+  // Shipping is paid at checkout, before the Venmo step. One flat price per order for each choice.
+  // perExtra adds that amount for every additional piece in the same order (leave 0 for a single flat price).
+  shipping: {
+    us:   { label: "United States", price: 10, perExtra: 0, eta: "Usually 2 to 5 business days after we send it" },
+    intl: { label: "International", price: 35, perExtra: 0, eta: "Usually 1 to 4 weeks. Not guaranteed" },
+    note: "Shipping is paid with your order. We ship by USPS with tracking after your payment arrives.",
+    intlNote: "International orders: import duties, taxes and fees set by your country are not included. They are paid by the buyer to the carrier on delivery."
+  }
 };
