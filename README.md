@@ -106,3 +106,10 @@ Measurements shown on each piece: pit to pit (laid flat, armpit seam to armpit s
 2. In the Form: Responses > Link to Sheets (this makes the orders spreadsheet). In Responses, turn on "Get email notifications for new responses".
 3. Form menu (three dots) > Get pre-filled link. Fill every field with its own name (type "order" in Order, "name" in Name, and so on), click Get link, and copy it. The link holds each field's `entry.NNNN` number.
 4. Put the form's `.../formResponse` address in `action`, the entry numbers in `fields`, and the normal public form link in `fixUrl`.
+
+## 13. Search (SEO) and shirt pages
+
+Every available shirt gets its own page (`piece-vwa-001.html` and so on) with its photos, details and price in a format Google reads, plus `sitemap.xml` and `robots.txt`.
+After importing new shirts (section 11), run `python3 tools/build.py` and commit. That rebuilds the shirt pages and the sitemap.
+The site address used in those files is `SITE` at the top of `tools/build.py`. If the site moves to its own domain, change it there and rebuild.
+The password screen blocks Google. Turn it off before the drop (`python3 tools/set_password.py --off`) and then submit the sitemap in Google Search Console.
