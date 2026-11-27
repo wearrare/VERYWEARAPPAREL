@@ -120,10 +120,15 @@ dialog::backdrop { background: rgba(17,17,17,.55); }
 .piece { display: grid; grid-template-columns: 1.05fr 1fr; gap: 26px; }
 @media (max-width: 760px) { .piece { grid-template-columns: 1fr; } }
 .piece .big { aspect-ratio: 4/5; border: 1px solid var(--ink); position: relative; background: var(--wash); overflow: hidden; }
-.piece .big img { width: 100%; height: 100%; object-fit: cover; }
-.thumbs { display: flex; gap: 8px; margin-top: 8px; }
-.thumbs button { width: 64px; height: 64px; padding: 0; border: 1px solid var(--ink); background: none; cursor: pointer; }
+.piece .big img { width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+.piece .big { touch-action: pan-y; }
+.gal-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: 1px solid var(--ink); background: rgba(250,248,243,.92); color: var(--ink); font-size: 28px; line-height: 1; cursor: pointer; z-index: 2; padding: 0 0 4px; }
+.gal-nav.prev { left: 10px; } .gal-nav.next { right: 10px; }
+.gal-count { position: absolute; bottom: 10px; right: 10px; background: rgba(250,248,243,.92); border: 1px solid var(--ink); padding: 3px 8px; font-size: 11px; letter-spacing: .1em; z-index: 2; }
+.thumbs { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.thumbs button { flex: 0 0 64px; width: 64px; height: 64px; padding: 0; border: 1px solid var(--ink); background: none; cursor: pointer; }
 .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+.thumbs button.on { outline: 2px solid var(--ink); outline-offset: 2px; }
 dl.spec { margin: 18px 0; display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; }
 dl.spec dt { font-family: "Mono", monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); padding-top: 3px; }
 dl.spec dd { margin: 0; }
@@ -257,3 +262,7 @@ details[open] summary::after { content: "\2212"; }
 summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .ans { padding: 0 0 18px; max-width: 64ch; }
 .ans p { margin: 0 0 10px; }
+
+/* keep the drop-list pop-up out of the way while the bag is open */
+body:has(.drawer.open) .su-pop { display: none; }
+.piece > div { min-width: 0; }

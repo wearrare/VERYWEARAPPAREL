@@ -229,12 +229,39 @@
       (isBuyable(p) && SH.us ? '<p class="hint">US shipping: ' + money(SH.us.one) + " for one piece, " + money(SH.us.few) + " for 2 to 3. International shipping is priced by country at checkout. All sales are final.</p>" : "");
     else if (p.status === "archive") action = '<p class="notice">This piece lives in The Archive and is not for sale. Curious about it? <a href="' + dmLink() + '" target="_blank" rel="noopener">Message us</a>.</p>';
     else action = '<button class="btn" disabled>' + (p.status === "sold" ? "Sold" : "On hold") + "</button>";
-    body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '">' : "") + '</div>' +
+    body.innerHTML = '<div class="piece"><div><div class="big">' + (imgs[0] ? '<img data-big src="' + esc(imgPath(imgs[0])) + '" alt="' + esc(p.name) + '" draggable="false">' : "") + (imgs.length > 1 ? '<button class="gal-nav prev" data-prev aria-label="Previous photo">&#8249;</button><button class="gal-nav next" data-next aria-label="Next photo">&#8250;</button><span class="gal-count mono" data-count>1 / ' + imgs.length + '</span>' : "") + '</div>' +
       (imgs.length > 1 ? '<div class="thumbs">' + imgs.map(function (f, i) { return '<button data-th="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + esc(imgPath(f)) + '" alt=""></button>'; }).join("") + "</div>" : "") + "</div>" +
       '<div><h2 class="disp h2">' + esc(p.name) + "</h2>" + (isBuyable(p) ? '<p style="font-size:24px;margin:10px 0 0">' + money(p.price) + "</p>" : "") +
       (spec.length ? '<dl class="spec">' + spec.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("") + "</dl>" : "") +
       (p.story ? "<p>" + esc(p.story) + "</p>" : "") + '<div style="margin-top:20px">' + action + "</div></div></div>";
-    $$("[data-th]", body).forEach(function (b) { b.addEventListener("click", function () { $("[data-big]", body).src = imgPath(imgs[+b.getAttribute("data-th")]); }); });
+    var cur = 0, big = $("[data-big]", body), cnt = $("[data-count]", body), ths = $$("[data-th]", body);
+    function show(i) {
+      if (imgs.length < 2) return;
+      cur = (i + imgs.length) % imgs.length;
+      big.src = imgPath(imgs[cur]);
+      if (cnt) cnt.textContent = (cur + 1) + " / " + imgs.length;
+      ths.forEach(function (t, k) { t.classList.toggle("on", k === cur); if (k === cur && t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" }); });
+      var nx = new Image(); nx.src = imgPath(imgs[(cur + 1) % imgs.length]);
+    }
+    ths.forEach(function (b) { b.addEventListener("click", function () { show(+b.getAttribute("data-th")); }); });
+    if (ths[0]) ths[0].classList.add("on");
+    var pv = $("[data-prev]", body), nxb = $("[data-next]", body);
+    if (pv) pv.addEventListener("click", function () { show(cur - 1); });
+    if (nxb) nxb.addEventListener("click", function () { show(cur + 1); });
+    var bigBox = $(".big", body), sx = null, sy = null;
+    if (bigBox && imgs.length > 1) {
+      bigBox.addEventListener("touchstart", function (e) { var t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+      bigBox.addEventListener("touchend", function (e) {
+        if (sx === null) return;
+        var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) show(cur + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    }
+    pieceDlg.onkeydown = function (e) {
+      if (!$("[data-big]", body) || imgs.length < 2) return;
+      if (e.key === "ArrowRight") { show(cur + 1); e.preventDefault(); }
+      else if (e.key === "ArrowLeft") { show(cur - 1); e.preventDefault(); }
+    };
     var add = $("[data-add]", body); if (add) add.addEventListener("click", function () { setBag(bag.concat([p.id])); pieceDlg.close(); openBag(); });
     var ob = $("[data-offer]", body); if (ob) ob.addEventListener("click", function () { openOffer(p); });
     var vb = $("[data-viewbag]", body); if (vb) vb.addEventListener("click", function () { pieceDlg.close(); openBag(); });
