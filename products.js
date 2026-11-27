@@ -877,7 +877,7 @@ window.WR_PRODUCTS = [
   },
   {
     id: "VWA-057",
-    name: "The Haunt Club If You've Got It Haunt It Tee",
+    name: "The Haunt Club If You've Got It Haunt It Underground Punk/Gothic Club Tee",
     label: "Made in USA",
     category: "Tees",
     era: "1990",
