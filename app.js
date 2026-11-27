@@ -298,7 +298,12 @@
     $$('[data-mount="shop"]').forEach(function (root) {
       var list = PRODUCTS.filter(function (p) { return p.status !== "archive" && p.category !== "Archive"; });
       var cats = []; list.forEach(function (p) { if (p.category && cats.indexOf(p.category) < 0) cats.push(p.category); });
-      var state = { cat: "All", onlyAvail: false };
+      var state = { cat: "All", onlyAvail: false, sizes: [] };
+      var SZ = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"], sizes = [];
+      list.forEach(function (p) { var z = (p.size || "").toUpperCase().replace("XXL", "2XL"); if (z && sizes.indexOf(z) < 0) sizes.push(z); });
+      sizes.sort(function (x, y) { var i = SZ.indexOf(x), j = SZ.indexOf(y); return (i < 0 ? 99 : i) - (j < 0 ? 99 : j) || (x < y ? -1 : 1); });
+      var sizeRow = el('<div class="chips" role="group" aria-label="Filter by size"></div>'), count = el('<p class="mono mute" role="status" style="margin:-8px 0 18px"></p>');
+      function sz(p) { return (p.size || "").toUpperCase().replace("XXL", "2XL"); }
       var chips = el('<div class="chips" role="group" aria-label="Filter pieces"></div>');
       function chip(label, on, fn) { var b = el('<button class="chip" aria-pressed="' + on + '">' + esc(label) + "</button>"); b.addEventListener("click", fn); return b; }
       var grid = el('<div class="grid g3"></div>');
@@ -306,14 +311,21 @@
         chips.innerHTML = "";
         ["All"].concat(cats).forEach(function (c) { chips.appendChild(chip(c, state.cat === c, function () { state.cat = c; draw(); })); });
         chips.appendChild(chip("Available only", state.onlyAvail, function () { state.onlyAvail = !state.onlyAvail; draw(); }));
+        sizeRow.innerHTML = "";
+        if (sizes.length > 1) {
+          sizeRow.appendChild(el('<span class="mono mute" style="align-self:center;margin-right:4px">Size</span>'));
+          sizeRow.appendChild(chip("All sizes", !state.sizes.length, function () { state.sizes = []; draw(); }));
+          sizes.forEach(function (z) { sizeRow.appendChild(chip(z, state.sizes.indexOf(z) > -1, function () { var i = state.sizes.indexOf(z); if (i > -1) state.sizes.splice(i, 1); else state.sizes.push(z); draw(); })); });
+        }
         grid.innerHTML = "";
-        var shown = list.filter(function (p) { return (state.cat === "All" || p.category === state.cat) && (!state.onlyAvail || p.status === "available"); });
+        var shown = list.filter(function (p) { return (state.cat === "All" || p.category === state.cat) && (!state.onlyAvail || p.status === "available") && (!state.sizes.length || state.sizes.indexOf(sz(p)) > -1); });
+        count.textContent = shown.length + (shown.length === 1 ? " piece" : " pieces") + (state.sizes.length ? " in " + state.sizes.join(", ") : "");
         var order = { available: 0, hold: 1, coming: 2, sold: 3 };
         shown.sort(function (a, b) { return (order[a.status] || 0) - (order[b.status] || 0); });
         if (!shown.length) grid.appendChild(el('<p class="empty" style="grid-column:1/-1">Nothing here right now. New pieces land often, follow <a href="https://instagram.com/' + C.igHandle + '">@' + esc(C.igHandle) + "</a>.</p>"));
         shown.forEach(function (p) { grid.appendChild(plate(p)); });
       }
-      root.appendChild(chips); root.appendChild(grid); draw();
+      root.appendChild(chips); root.appendChild(sizeRow); root.appendChild(count); root.appendChild(grid); draw();
     });
     $$('[data-mount="featured"]').forEach(function (root) {
       var n = +root.getAttribute("data-limit") || 3;
