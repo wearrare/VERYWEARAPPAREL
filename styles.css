@@ -292,10 +292,3 @@ a.plate { text-decoration: none; }
 .lb-box .zoom-ctl { top: 14px; right: 14px; }
 .lb-x { position: absolute; top: 12px; left: 12px; width: 44px; height: 44px; border: 1px solid #faf8f3; background: transparent; color: #faf8f3; font-size: 28px; cursor: pointer; z-index: 4; }
 .lb-hint { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; color: #faf8f3; opacity: .7; font-size: 11px; margin: 0; pointer-events: none; }
-
-/* under construction */
-.tape { height: 18px; background: repeating-linear-gradient(-45deg, #111 0 18px, #f2c200 18px 36px); border-top: 2px solid #111; border-bottom: 2px solid #111; margin: 0; }
-.construct { border: 3px dashed var(--ink); padding: 22px 24px; text-align: center; background: repeating-linear-gradient(-45deg, transparent 0 14px, rgba(242,194,0,.10) 14px 28px); }
-.construct .mono { display: inline-block; background: #f2c200; color: #111; padding: 4px 10px; letter-spacing: .14em; text-transform: uppercase; font-size: 12px; }
-.construct h2 { margin: 12px 0 8px; }
-.construct p { margin: 0 auto; max-width: 56ch; }
