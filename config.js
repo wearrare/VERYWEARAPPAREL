@@ -10,6 +10,7 @@ window.WR = {
   depop: "illa9",
   venmo: "very_wear_apparel",
   paypal: "marzsoul@yahoo.com",
+  paypalName: "ILLA's closet",
 
   // ---- Google tools (free) ---------------------------------
   // Paste links here once you've made them. Leave blank to use the built-in versions.
