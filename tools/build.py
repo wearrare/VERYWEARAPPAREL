@@ -206,8 +206,6 @@ page("international.html", "International Order | Very Wear Apparel", "Internati
 # ---------------------------------------------------------------- ARCHIVE
 archive = head("Value beyond money", "The Archive",
                "Some pieces are not for sale. They are held, studied, and shown, because a garment can be an artifact: a hand, a decade, a body that once moved through the world in it.") + """
-<div class="tape" aria-hidden="true"></div>
-<section style="padding-bottom:0"><div class="wrap"><div class="construct"><span class="mono">&#9888; Under construction</span><h2 class="disp h3">The Archive is being built</h2><p>Plates are added as each piece is cleared, photographed and catalogued. Check back often. Something new goes up every week.</p></div></div></section>
 <section><div class="wrap">
 <div class="grid g2" style="margin-bottom:40px">
 <div><h2 class="disp h2" style="margin-bottom:14px">Clothing as collection</h2>
@@ -236,11 +234,9 @@ stylist = head("Services", "Stylist", "Fluent in the houses, the seasons, and th
 page("stylist.html", "Stylist | Very Wear Apparel", "Personal styling, closet edits and sourcing from a stylist fluent in Chanel, Gucci, Dior and Rick Owens.", stylist)
 
 # ---------------------------------------------------------------- SIP & THRIFT
-sip = head("By invitation", "Coming soon", "Something is being built in the showroom.") + """
-<div class="tape" aria-hidden="true"></div>
-<section><div class="wrap"><div class="construct" style="max-width:640px;margin:0 auto">
-<span class="mono">&#9888; Under construction</span>
-<h2 class="disp h2" style="margin:10px 0 14px">Something is being built</h2>
+sip = head("By invitation", "Coming soon", "Details go to the people on the list.") + """
+<section><div class="wrap"><div style="max-width:640px;margin:0 auto">
+<h2 class="disp h2" style="margin:0 0 14px">Details soon</h2>
 <p>This one is small on purpose and invitation only. Details go to the people on the list.</p>
 <form class="panel" data-gform="sipThrift" data-request="Showroom evening invite request" data-thanks="Thank you. If you're chosen, you'll hear from us directly." novalidate style="margin-top:22px;text-align:left">
 <h3 class="disp h3" style="margin-bottom:14px">Join the list</h3>
