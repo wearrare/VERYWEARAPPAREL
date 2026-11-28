@@ -5,16 +5,16 @@ import os, html, json, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://wearrare.github.io/VERYWEARAPPAREL/"   # if the site moves to its own domain, change this and re-run build.py + seo step
-DEFAULT_OG = "images/sip-and-thrift-flyer.png"
+DEFAULT_OG = "images/pieces/vwa-100-1.jpg"
 IG, SAGE, DEPOP, VENMO = "very_wear_apparel", "sagejoygold", "illa9", "very_wear_apparel"
 
 NAV = [("shop.html", "Shop"), ("archive.html", "The Archive"), ("stylist.html", "Stylist"),
-       ("sip-thrift.html", "Sip &amp; Thrift"), ("book.html", "Book"), ("faq.html", "FAQ")]
+       ("book.html", "Book"), ("faq.html", "FAQ")]
 
 FAV = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf8f3'/%3E%3Cpath d='M16 3l13 13-13 13L3 16z' fill='%23111'/%3E%3C/svg%3E"
 
 
-def page(fname, title, desc, body, wide_title=None, og=None, ld=None, og_type="website", logo_tag="h1"):
+def page(fname, title, desc, body, wide_title=None, og=None, ld=None, og_type="website", logo_tag="h1", noindex=False):
     canon = SITE if fname == "index.html" else SITE + fname
     og_url = (og or DEFAULT_OG)
     og_url = og_url if og_url.startswith("http") else SITE + og_url
@@ -29,6 +29,7 @@ def page(fname, title, desc, body, wide_title=None, og=None, ld=None, og_type="w
 <meta name="description" content="{html.escape(desc)}">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
+{"<meta name=\"robots\" content=\"noindex,nofollow\">" if noindex else ""}
 <link rel="canonical" href="{canon}">
 <meta property="og:type" content="{og_type}">
 <meta property="og:site_name" content="Very Wear Apparel">
@@ -129,9 +130,8 @@ home = f"""
 <div><span class="mono mute">The name</span><h2 class="disp h2" style="margin:10px 0 16px">Very Wear Apparel.</h2>
 <p class="lede">Clothes are made to be worn, and the best of them are rare. Each piece here has already lived a life. You're next in line.</p>
 <p><a class="btn ghost sm" href="archive.html">Enter the Archive</a></p></div>
-<div class="panel"><span class="mono mute">Invitation only</span><h3 class="disp h3">Sip &amp; Thrift</h3>
-<p>An evening in the showroom with tea, drinks, and the racks. Guests are selected, then invited.</p>
-<p class="mono" data-sip-date></p><a class="btn sm" href="sip-thrift.html">Request an invite</a></div>
+<div class="panel"><span class="mono mute">Open daily</span><h3 class="disp h3">Visit &amp; book</h3>
+<p>Private shopping and styling by appointment.</p><a class="btn sm" href="book.html">Book now</a></div>
 </div></div></section>
 
 <section style="padding-top:0"><div class="wrap">
@@ -206,6 +206,8 @@ page("international.html", "International Order | Very Wear Apparel", "Internati
 # ---------------------------------------------------------------- ARCHIVE
 archive = head("Value beyond money", "The Archive",
                "Some pieces are not for sale. They are held, studied, and shown, because a garment can be an artifact: a hand, a decade, a body that once moved through the world in it.") + """
+<div class="tape" aria-hidden="true"></div>
+<section style="padding-bottom:0"><div class="wrap"><div class="construct"><span class="mono">&#9888; Under construction</span><h2 class="disp h3">The Archive is being built</h2><p>Plates are added as each piece is cleared, photographed and catalogued. Check back often. Something new goes up every week.</p></div></div></section>
 <section><div class="wrap">
 <div class="grid g2" style="margin-bottom:40px">
 <div><h2 class="disp h2" style="margin-bottom:14px">Clothing as collection</h2>
@@ -234,31 +236,21 @@ stylist = head("Services", "Stylist", "Fluent in the houses, the seasons, and th
 page("stylist.html", "Stylist | Very Wear Apparel", "Personal styling, closet edits and sourcing from a stylist fluent in Chanel, Gucci, Dior and Rick Owens.", stylist)
 
 # ---------------------------------------------------------------- SIP & THRIFT
-sip = head("By invitation", "Sip &amp; Thrift", "An evening in the showroom. Tea, drinks, music, and racks of rare pieces, with a room of people who care what they wear.") + """
-<section><div class="wrap"><div class="grid g2" style="align-items:start">
-<div><img class="flyer" src="images/sip-and-thrift-flyer.png" alt="Sip and Thrift event flyer, Very Wear Apparel" loading="lazy" width="800">
-<p class="hint">Flyer preview. Date and address go to invited guests.</p></div>
-<div>
-<span class="mono mute" data-sip-date></span>
-<h2 class="disp h2" style="margin:10px 0 14px">Selected, then invited</h2>
-<p>Sip &amp; Thrift is small on purpose. Guests are chosen, then invited to the showroom to shop, sip, and stay awhile. Tea and beverages are on, with non-alcoholic options always.</p>
-<ul class="list" style="margin:18px 0 26px">
-<li><span>First pour on arrival</span><span class="mono mute">Tea &middot; spritzes &middot; sangria</span></li>
-<li><span>Racks by era and mood</span><span class="mono mute">Not by size</span></li>
-<li><span>Find of the night</span><span class="mono mute">One piece, revealed</span></li>
-<li><span>Guests-only pricing</span><span class="mono mute">That night</span></li></ul>
-<form class="panel" data-gform="sipThrift" data-request="Sip & Thrift invite request" data-thanks="Thank you. Guests are selected and invited. If you're chosen, you'll hear from us with the date, time and address." novalidate>
-<h3 class="disp h3" style="margin-bottom:14px">Request an invite</h3>
+sip = head("By invitation", "Coming soon", "Something is being built in the showroom.") + """
+<div class="tape" aria-hidden="true"></div>
+<section><div class="wrap"><div class="construct" style="max-width:640px;margin:0 auto">
+<span class="mono">&#9888; Under construction</span>
+<h2 class="disp h2" style="margin:10px 0 14px">Something is being built</h2>
+<p>This one is small on purpose and invitation only. Details go to the people on the list.</p>
+<form class="panel" data-gform="sipThrift" data-request="Showroom evening invite request" data-thanks="Thank you. If you're chosen, you'll hear from us directly." novalidate style="margin-top:22px;text-align:left">
+<h3 class="disp h3" style="margin-bottom:14px">Join the list</h3>
 <div class="f"><label for="s-name">Name</label><input id="s-name" name="Name" type="text" required data-label="name"></div>
 <div class="two"><div class="f"><label for="s-ig">Instagram</label><input id="s-ig" name="Instagram" type="text" placeholder="@" required data-label="Instagram"></div>
 <div class="f"><label for="s-email">Email</label><input id="s-email" name="Email" type="email"></div></div>
-<div class="two"><div class="f"><label for="s-plus">Plus one?</label><select id="s-plus" name="Plus one"><option>No</option><option>Yes</option></select></div>
-<div class="f"><label for="s-drink">Drink</label><select id="s-drink" name="Drink"><option>Cocktail</option><option>Mocktail</option><option>Tea</option><option>Surprise me</option></select></div></div>
-<div class="f"><label for="s-note">Anything we should know?</label><textarea id="s-note" name="Notes" placeholder="Labels you love, sizes, dietary notes..."></textarea></div>
 <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
 <p class="err" hidden></p><button class="btn" type="submit">Request invite</button></form>
-</div></div></div></section>"""
-page("sip-thrift.html", "Sip & Thrift | Very Wear Apparel", "An invitation-only evening of tea, drinks and rare vintage in the Very Wear Apparel showroom.", sip)
+</div></div></section>"""
+page("sip-thrift.html", "Very Wear Apparel", "Very Wear Apparel.", sip, noindex=True)
 
 # ---------------------------------------------------------------- BOOK
 book = head("Appointment only", "Book the showroom", "The showroom opens by appointment. Choose what you'd like, pick a day and time, and it will be confirmed. South Carolina based.") + """
@@ -270,7 +262,7 @@ about = head("About", "The Holy Haberdashery", "Very Wear Apparel is a South Car
 <section><div class="wrap"><div class="grid g2" style="align-items:start">
 <div><p>Vintage is not a trend here. It is an archive. Every piece is sourced, studied, and chosen for what it is: the hand that made it, the decade it's from, and the way it carries itself.</p>
 <p>The knowledge here runs deep, especially in high fashion and designer garments from houses like Chanel, Gucci, Christian Dior and Rick Owens. That knowledge shapes what comes into the collection, how it's presented, and how the people who wear it are styled.</p>
-<p>Beyond selling, there's styling, closet edits, and Sip &amp; Thrift evenings in the showroom, because clothes are better when people get to love them in the same room.</p></div>
+<p>Beyond selling, there's styling, and closet edits, because clothes are better when people get to love them in the same room.</p></div>
 <div class="panel"><span class="mono mute">Find Us</span>
 <ul class="list" style="margin-top:12px">
 <li><span>Instagram</span><a href="https://instagram.com/{IG}" target="_blank" rel="noopener">@{IG}</a></li>
@@ -288,7 +280,6 @@ LINKS = [
     ("Shop on Depop", f"depop.com/{DEPOP}", f"https://www.depop.com/{DEPOP}", True),
     ("Shop the collection", "One of one pieces", "shop.html", False),
     ("Book an appointment", "Open 7 days, 12 to 9:30", "book.html", False),
-    ("Sip &amp; Thrift", "Request an invite", "sip-thrift.html", False),
 ]
 rows = "".join(
     f'<a class="lk" href="{h}"{" target=\"_blank\" rel=\"noopener\"" if ext else ""}><span class="disp">{t}</span><span class="mono mute">{s}</span><span class="arrow" aria-hidden="true">&rarr;</span></a>'
@@ -348,7 +339,7 @@ def money(n): return "$" + (str(int(n)) if float(n) == int(n) else f"{n:.2f}")
 for fn in os.listdir(ROOT):
     if fn.startswith("piece-") and fn.endswith(".html"): os.remove(os.path.join(ROOT, fn))
 
-urls = ["", "shop.html", "faq.html", "international.html", "archive.html", "stylist.html", "sip-thrift.html", "book.html", "about.html"]
+urls = ["", "shop.html", "faq.html", "international.html", "archive.html", "stylist.html", "book.html", "about.html"]
 for p in PRODUCTS:
     if p.get("status") == "archive" or p.get("category") == "Archive" or not p.get("images"): continue
     pid, name = p["id"], p["name"]
