@@ -175,27 +175,33 @@
       if (!pk && !String(fd.get("Address")).trim()) { err.hidden = false; err.textContent = "Add your shipping address."; return; }
       var total = sub + sc, orderId = newOrderId(), country = intl ? sel.value : "United States";
       var fields = { Order: orderId, Name: fd.get("Name"), Email: email, Country: country, Codes: bag.join(", "), ShippingPaid: pk ? "$0 (local pickup)" : money(sc), Address: pk ? "LOCAL PICKUP - town: " + town : fd.get("Address"), Notes: fd.get("Notes"),
-        Pieces: bag.map(function (id) { var p = byId(id); return p.id + " " + p.name + " (" + money(p.price) + ")"; }).join("; "), Subtotal: money(sub), Total: money(total), Payment: "Awaiting Venmo to @" + C.venmo };
+        Pieces: bag.map(function (id) { var p = byId(id); return p.id + " " + p.name + " (" + money(p.price) + ")"; }).join("; "), Subtotal: money(sub), Total: money(total), Payment: "Awaiting Venmo to @" + C.venmo + (C.paypal ? " or PayPal to " + C.paypal : "") };
       var btn = $("[data-go]", form); btn.disabled = true; btn.textContent = "Sending...";
       sendOrder(fields, "New order " + orderId + " " + money(total)).then(function (res) { fields._sub = sub; fields._ship = sc; showPay(body, orderId, total, fields, res, bag.slice()); });
     });
   }
+  function paypalLink(amount, note) {
+    return "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=" + encodeURIComponent(C.paypal) + "&item_name=" + encodeURIComponent(note) + "&amount=" + encodeURIComponent(Number(amount).toFixed(2)) + "&currency_code=USD&no_shipping=1&no_note=1";
+  }
   function showPay(body, orderId, total, fields, res, ids) {
     var note = "Order " + orderId + ", shirt " + ids.join(", ");
     var links = venmoLinks(total, note);
+    var ppHtml = C.paypal ? '<hr class="rule" style="margin:22px 0"><h3 class="disp h3" style="margin-bottom:10px">Or pay with PayPal</h3><div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:20px;word-break:break-all">' + esc(C.paypal) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. Put the same note on your payment: <strong>" + esc(note) + '</strong></p></div><div class="row"><a class="btn" data-pp href="' + esc(paypalLink(total, note)) + '" target="_blank" rel="noopener">Open PayPal</a><button class="btn ghost" data-ppcp>Copy PayPal email</button></div><p class="hint">PayPal button not working? Send ' + money(total) + " to " + esc(C.paypal) + " in the PayPal app or on paypal.com, with the note above.</p>" : "";
     body.innerHTML =
-      '<h2 class="disp h2">Pay with Venmo</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong> <span class=\"mono mute\">(" + money(fields._sub) + " pieces + " + money(fields._ship) + " shipping)</span>.</p>" +
+      '<h2 class="disp h2">Pay with Venmo' + (C.paypal ? " or PayPal" : "") + '</h2><p class="lede">Order <strong>' + esc(orderId) + "</strong> for <strong>" + money(total) + "</strong> <span class=\"mono mute\">(" + money(fields._sub) + " pieces + " + money(fields._ship) + " shipping)</span>.</p>" +
       '<div class="notice"><p class="mono" style="margin:0 0 6px">Pay to</p><p style="margin:0;font-size:22px">@' + esc(C.venmo) + '</p><p class="hint" style="margin-top:8px">Amount <strong>' + money(total) + "</strong>. Keep the shirt " + (ids.length > 1 ? "codes" : "code") + " in the Venmo note so we can match your payment: <strong>" + esc(note) + "</strong></p></div>" +
       '<div class="row"><a class="btn" data-venmo href="' + esc(IS_MOBILE ? links.app : links.web) + '"' + (IS_MOBILE ? "" : ' target="_blank" rel="noopener"') + '>Open Venmo</a><button class="btn ghost" data-cp>Copy note</button></div>' +
       (IS_MOBILE ? '<p class="hint">Venmo not opening? <a href="' + esc(links.web) + '" target="_blank" rel="noopener">Use the Venmo website</a>.</p>' : "") +
+      ppHtml +
       (res.sent ? '<p class="hint" style="margin-top:18px">Your order details were sent. After you pay, we confirm by message and hold your pieces.</p>' : fallbackHtml(res.text)) +
       '<hr class="rule" style="margin:22px 0"><button class="btn ghost" data-paid>I have paid</button>';
     $("[data-cp]", body).addEventListener("click", function (e) { copy(note); e.target.textContent = "Copied"; });
+    var ppc = $("[data-ppcp]", body); if (ppc) ppc.addEventListener("click", function (e) { copy(C.paypal); e.target.textContent = "Copied"; });
     if (!res.sent) wireFallback(body, res.text);
     if (IS_MOBILE) $("[data-venmo]", body).addEventListener("click", function () { setTimeout(function () { if (!document.hidden) window.open(links.web, "_blank"); }, 1400); });
     $("[data-paid]", body).addEventListener("click", function () {
       setBag([]);
-      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo payment and match it to your shirt code.</li><li>We email you to confirm your order.</li><li>We pack it and ship it by USPS within 2 to 7 days of your payment, and email your tracking number. Local pickup: we email you to set a time and share the pickup address.</li></ol></div>' + ((C.orderForm && C.orderForm.fixUrl) ? '<p>Need to fix your address? <a href="' + esc(C.orderForm.fixUrl) + '" target="_blank" rel="noopener">Send your shipping details again</a>.</p>' : "") + '<p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>. All sales are final.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
+      body.innerHTML = '<div class="ok"><h2 class="disp h2">Thank you.</h2><p class="lede">Order ' + esc(orderId) + ' is in.</p><div class="notice"><p class="mono" style="margin:0 0 8px">What Happens Next</p><ol style="margin:0;padding-left:20px"><li>We see your Venmo or PayPal payment and match it to your shirt code.</li><li>We email you to confirm your order.</li><li>We pack it and ship it by USPS within 2 to 7 days of your payment, and email your tracking number. Local pickup: we email you to set a time and share the pickup address.</li></ol></div>' + ((C.orderForm && C.orderForm.fixUrl) ? '<p>Need to fix your address? <a href="' + esc(C.orderForm.fixUrl) + '" target="_blank" rel="noopener">Send your shipping details again</a>.</p>' : "") + '<p>Questions? Message <a href="' + dmLink() + '" target="_blank" rel="noopener">@' + esc(C.igHandle) + '</a>. All sales are final.</p><a class="btn" href="shop.html">Keep browsing</a></div>';
     });
   }
 

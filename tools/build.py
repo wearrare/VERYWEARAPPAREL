@@ -119,7 +119,7 @@ home = f"""
 <section style="padding-top:0"><div class="wrap">
 <div class="sec-head"><h2 class="disp h2">Three ways in</h2></div>
 <div class="grid g3">
-<div class="panel"><span class="mono mute">01 / Shop</span><h3 class="disp h3">The collection</h3><p>One of one pieces, priced and ready. Add to your bag, pay with Venmo, done.</p><a class="btn sm" href="shop.html">Shop now</a></div>
+<div class="panel"><span class="mono mute">01 / Shop</span><h3 class="disp h3">The collection</h3><p>One of one pieces, priced and ready. Add to your bag, pay with Venmo or PayPal, done.</p><a class="btn sm" href="shop.html">Shop now</a></div>
 <div class="panel"><span class="mono mute">02 / Showroom</span><h3 class="disp h3">By appointment</h3><p>Private visits only, open seven days. Pick a time, browse the racks, and buy on the spot.</p><a class="btn sm" href="book.html">Book a visit</a></div>
 <div class="panel"><span class="mono mute">03 / Stylist</span><h3 class="disp h3">Style with us</h3><p>Personal styling, closet edits, and sourcing from someone fluent in the houses.</p><a class="btn sm" href="stylist.html">See services</a></div>
 </div></div></section>
@@ -146,22 +146,22 @@ page("index.html", "Very Wear Apparel | Vintage Tees and Rare Pieces, South Caro
          "sameAs": [f"https://instagram.com/{IG}", f"https://www.depop.com/{DEPOP}"]})
 
 # ---------------------------------------------------------------- SHOP
-shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo.") + """
+shop = head("The collection", "Shop", "Every piece is one of one. Tap a piece for photos and details, add it to your bag, and pay with Venmo or PayPal.") + """
 <section><div class="wrap"><div data-mount="shop"></div>
 <p class="hint" style="margin-top:34px">Shipping, local pickup, offers and how buying works are on the <a href="faq.html">FAQ page</a>. All sales are final.</p>
 </div></section>
 """
-page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo.", shop)
+page("shop.html", "Shop | Very Wear Apparel", "Shop the Very Wear Apparel collection of rare vintage garments and accessories. One of one pieces, pay with Venmo or PayPal.", shop)
 
 # ---------------------------------------------------------------- FAQ
 faq = head("Good to know", "FAQ", "How buying works, shipping, local pickup, international orders, and what to expect from vintage and used garments.") + """
 <section><div class="wrap" style="max-width:820px">
 <div class="faq-sec"><h2 class="disp h3">How It Works</h2>
-<details><summary>How Do I Buy A Piece?</summary><div class="ans">Tap a piece to see photos and measurements, then add it to your bag. At checkout you enter your name, email and address, and your shipping is added to the total. Then you pay with Venmo to @very_wear_apparel. Keep the shirt code in the Venmo note so we can match your payment.</div></details>
+<details><summary>How Do I Buy A Piece?</summary><div class="ans">Tap a piece to see photos and measurements, then add it to your bag. At checkout you enter your name, email and address, and your shipping is added to the total. Then you pay with Venmo (@very_wear_apparel) or PayPal (marzsoul@yahoo.com). Keep the shirt code in the payment note so we can match your payment.</div></details>
 <details><summary>Is A Piece Held When It Is In My Bag?</summary><div class="ans">No. Every piece is one of one, and the first payment we receive gets it. If you pay for a piece that was already sold, we refund you in full.</div></details>
 <details><summary>Can I Make An Offer?</summary><div class="ans">Yes. Tap a piece and choose Make An Offer. We reply within 24 hours. If we accept, we hold the piece for you for 24 hours so you can pay. Accepted offers are final. Shipping is added on top of the agreed price.</div></details>
 <details><summary>When Do I Hear From You?</summary><div class="ans">We email you to confirm your order after your payment arrives. If you ship, your tracking number comes by email too.</div></details>
-<details><summary>How Do I Pay?</summary><div class="ans">Venmo, to @very_wear_apparel. The amount is the price of your pieces plus shipping, shown on the payment screen. Your order is not final until we confirm your payment.</div></details>
+<details><summary>How Do I Pay?</summary><div class="ans">Venmo (@very_wear_apparel) or PayPal (marzsoul@yahoo.com). The amount is the price of your pieces plus shipping, shown on the payment screen. Your order is not final until we confirm your payment.</div></details>
 </div>
 <div class="faq-sec"><h2 class="disp h3">Shipping</h2>
 <details><summary>How Much Is Shipping In The United States?</summary><div class="ans"><span data-cfg="us.one"></span> for 1 piece and <span data-cfg="us.few"></span> for 2 to 3 pieces, paid at checkout. Orders ship by USPS Ground Advantage within 2 to 7 days after your payment is confirmed. For 4 or more pieces, <a href="https://ig.me/m/very_wear_apparel" target="_blank" rel="noopener">message us on Instagram</a> for shipping.</div></details>
@@ -198,10 +198,10 @@ faq = head("Good to know", "FAQ", "How buying works, shipping, local pickup, int
 page("faq.html", "FAQ | Very Wear Apparel", "Shipping, local pickup, international orders, offers, final sale policy, and what to expect from vintage and used garments at Very Wear Apparel.", faq)
 
 # ---------------------------------------------------------------- INTERNATIONAL ORDER
-intl = head("Outside the United States", "International Order", "Fill in your details, choose your country, and your shipping price is added to the total before you pay with Venmo.") + """
+intl = head("Outside the United States", "International Order", "Fill in your details, choose your country, and your shipping price is added to the total before you pay with Venmo or PayPal.") + """
 <section><div class="wrap"><div data-mount="intl"></div></div></section>
 """
-page("international.html", "International Order | Very Wear Apparel", "International order page for Very Wear Apparel. Choose your country, see your USPS shipping price, and pay with Venmo.", intl)
+page("international.html", "International Order | Very Wear Apparel", "International order page for Very Wear Apparel. Choose your country, see your USPS shipping price, and pay with Venmo or PayPal.", intl)
 
 # ---------------------------------------------------------------- ARCHIVE
 archive = head("Value beyond money", "The Archive",

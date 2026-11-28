@@ -9,6 +9,7 @@ window.WR = {
   personalIg: "sagejoygold",
   depop: "illa9",
   venmo: "very_wear_apparel",
+  paypal: "marzsoul@yahoo.com",
 
   // ---- Google tools (free) ---------------------------------
   // Paste links here once you've made them. Leave blank to use the built-in versions.
