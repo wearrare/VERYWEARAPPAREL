@@ -1311,6 +1311,21 @@ window.WR_PRODUCTS = [
     thumbs: true
   },
   {
+    id: "VWA-086",
+    name: "3D Emblem Spirit of America Truckers Only Ohio Truck Stop Tee",
+    label: "3D Emblem",
+    category: "Tees",
+    era: "1987",
+    size: "XXL",
+    condition: "Pre-Loved",
+    pit: 19.5,
+    length: 24,
+    price: 725,
+    status: "available",
+    images: ["vwa-086-1.jpg", "vwa-086-2.jpg", "vwa-086-3.jpg", "vwa-086-4.jpg", "vwa-086-5.jpg", "vwa-086-6.jpg", "vwa-086-7.jpg", "vwa-086-8.jpg", "vwa-086-9.jpg", "vwa-086-10.jpg", "vwa-086-11.jpg", "vwa-086-12.jpg"],
+    thumbs: true
+  },
+  {
     id: "VWA-087",
     name: "Metallica Load Sold Out American Tour Bootleg Tee",
     label: "Worn Tag",
@@ -1323,6 +1338,21 @@ window.WR_PRODUCTS = [
     price: 150,
     status: "available",
     images: ["vwa-087-1.jpg", "vwa-087-2.jpg", "vwa-087-3.jpg", "vwa-087-4.jpg", "vwa-087-5.jpg", "vwa-087-6.jpg", "vwa-087-7.jpg", "vwa-087-8.jpg", "vwa-087-9.jpg", "vwa-087-10.jpg"],
+    thumbs: true
+  },
+  {
+    id: "VWA-088",
+    name: "The Flaming Lips The Soft Bulletin Tour Tee",
+    label: "Giant by Tultex",
+    category: "Tees",
+    era: "1999",
+    size: "M",
+    condition: "Pre-Loved",
+    pit: 21.5,
+    length: 26,
+    price: 165,
+    status: "available",
+    images: ["vwa-088-1.jpg", "vwa-088-2.jpg", "vwa-088-3.jpg", "vwa-088-4.jpg", "vwa-088-5.jpg", "vwa-088-6.jpg", "vwa-088-7.jpg"],
     thumbs: true
   },
   {
