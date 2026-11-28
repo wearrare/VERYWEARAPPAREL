@@ -63,7 +63,7 @@ window.WR_PRODUCTS = [
     length: 32,
     price: 165,
     status: "available",
-    images: ["vwa-002-1.jpg", "vwa-002-2.jpg", "vwa-002-3.jpg", "vwa-002-4.jpg", "vwa-002-5.jpg", "vwa-002-6.jpg"],
+    images: ["vwa-002-1.jpg", "vwa-002-2.jpg", "vwa-002-3.jpg", "vwa-002-4.jpg", "vwa-002-5.jpg"],
     thumbs: true
   },
   {
